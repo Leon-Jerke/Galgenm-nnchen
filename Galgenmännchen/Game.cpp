@@ -1,5 +1,6 @@
 #include "Game.h"
-#include "Player.h"
+#include "Person.h"
+#include "Computer.h"
 #include <iostream>
 
 using namespace std;
@@ -21,57 +22,25 @@ void Game::Initialize()
 {
 	std::cout << "Willkomen zu Galgenmaennchen!" << std::endl
 	<< "Ein Projekt von Leo :D" << std::endl;
-	for (size_t i = 0; i <= 10; i++)
-	{
-		std::cout <<  i << std::endl;
-		PrintHangman(i);
-	}
-	do {
-		std::cout << "Wie moechtest du spielen? (1 = Spieler vs Computer) (2 = Player vs Player)" << std::endl;
-		if (!(std::cin >> mGamemode) || (mGamemode != 1 && mGamemode != 2))
-		{
-			std::cin.clear();
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			std::cout << std::endl << "Die Eingabe wurde leider nicht erkannt, bitte versuche es erneut :/" << std::endl;
-		}
-	} while (mGamemode != 1 && mGamemode != 2);
+
+	PrintRules();
+
+	mGamemode = ChooseGamemode();
 
 	switch (mGamemode)
 	{
-	case 1:
+	case Player_vs_Computer:
 	{
 		std::cout << "Wie heisst du?" << std::endl;
 		std::string p1_name;
 		std::cin >> p1_name;
-		mPlayers.push_back(new Player(p1_name));
-		mPlayers.push_back(new Player("Computer"));
+		mPlayers.push_back(new Person(p1_name));
+		mPlayers.push_back(new Computer(1));
 	}
 		break;
-	case 2:
+	case Player_vs_Player:
 	{
-		std::cout << "Wie viele Spieler?" << std::endl;
-		while (mNumberOfPlayers < MIN_PLAYER_NUMBER)
-		{
-			if (!(std::cin >> mNumberOfPlayers))
-			{
-				std::cin.clear();
-				cin.ignore(numeric_limits<streamsize>::max(), '\n');
-				std::cout << std::endl << "Die Eingabe wurde leider nicht erkannt, bitte versuche es erneut :/" << std::endl;
-			}
-			else if (mNumberOfPlayers < MIN_PLAYER_NUMBER)
-			{
-				std::cin.clear();
-				cin.ignore(numeric_limits<streamsize>::max(), '\n');
-				std::cout << std::endl << "Es werden mindestens 2 Spieler benoetigt" << std::endl;
-			}
-		}
-		for (size_t i = 1; i <= mNumberOfPlayers; i++)
-		{
-			std::cout << "Wie heisst Spieler " << i << " ?" << std::endl;
-			std::string p_name;
-			std::cin >> p_name;
-			mPlayers.push_back(new Player(p_name));
-		}
+
 	}
 		break;
 	default:
@@ -95,6 +64,59 @@ void Game::PressAnyKeyToContinue()
 {
 	system("pause");
 	system("cls");
+}
+
+int Game::ChooseGamemode()
+{
+	int gamemode;
+	do {
+		std::cout << "Wie moechtest du spielen? (1 = Spieler vs Computer) (2 = Spieler vs Spieler)" << std::endl;
+		if (!(std::cin >> gamemode) || (gamemode != 1 && gamemode != 2))
+		{
+			std::cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			std::cout << std::endl << "Die Eingabe wurde leider nicht erkannt, bitte versuche es erneut :/" << std::endl;
+		}
+	} while (gamemode != 1 && gamemode != 2);
+
+	return gamemode;
+}
+
+void Game::CreatePlayers()
+{
+	std::cout << "Wie viele Spieler?" << std::endl;
+	while (mNumberOfPlayers < MIN_PLAYER_NUMBER)
+	{
+		if (!(std::cin >> mNumberOfPlayers))
+		{
+			std::cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			std::cout << std::endl << "Die Eingabe wurde leider nicht erkannt, bitte versuche es erneut :/" << std::endl;
+		}
+		else if (mNumberOfPlayers < MIN_PLAYER_NUMBER)
+		{
+			std::cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			std::cout << std::endl << "Es werden mindestens 2 Spieler benoetigt" << std::endl;
+		}
+	}
+	for (size_t i = 1; i <= mNumberOfPlayers; i++)
+	{
+		std::cout << "Wie heisst Spieler " << i << " ?" << std::endl;
+		std::string p_name;
+		std::cin >> p_name;
+		mPlayers.push_back(new Player(p_name));
+	}
+}
+
+void Game::PrintRules()
+{
+	std::cout << "Die Regeln: " << std::endl;
+	std::cout << "Regel 2: ..." << std::endl;
+	std::cout << "Regel 1: ..." << std::endl;
+	std::cout << "Regel 2: ..." << std::endl;
+	std::cout << "Regel 3: ..." << std::endl;
+	std::cout << "Regel 4: ..." << std::endl;
 }
 
 void Game::PrintHangman(int wrongGuesses)

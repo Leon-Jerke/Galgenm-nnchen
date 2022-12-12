@@ -1,14 +1,14 @@
 #pragma once
 #include <vector>
 
-class Player;  // forward declaration
+class IPlayer;  // forward declaration
 
 
-typedef enum
+enum Gamemodes
 {
 	Player_vs_Computer = 1,
 	Player_vs_Player = 2
-} Gamemode;
+};
 
 class Game
 {
@@ -20,10 +20,13 @@ public:
 	void StartRound();
 	void GameTurn();
 	void PressAnyKeyToContinue();
+	void PrintRules();
 	void PrintHangman(int wrongGuesses);
+	int	 ChooseGamemode();
+	void CreatePlayers();
 
 private:
-	std::vector<Player*> mPlayers;
+	std::vector<IPlayer*> mPlayers;
 	int			mNumberOfPlayers;
 	int			mGamemode;
 	char*		mGuessWord;

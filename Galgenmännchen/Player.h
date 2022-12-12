@@ -1,14 +1,30 @@
 #pragma once
 #include <string>
 
-class Player
+class IPlayer
 {
 public:
-	Player(std::string Name);
-	~Player() {};
-private:
-	std::string mName;
-	int mWrongTrys;
-	int mWinScore;
+	virtual ~IPlayer() {};
 
+	virtual string ChooseWord() = 0;
+	virtual char GuessLetter() = 0;
+
+	string GetName()
+	{
+		return mName;
+	}
+
+	void SetScore(int score)
+	{
+		mScore = score;
+	}
+
+	int GetScore()
+	{
+		return mScore;
+	}
+protected:
+	string mName;
+	int mScore;
+	bool mIsGamemaker;
 };
