@@ -24,7 +24,7 @@ char Computer::GuessLetter()
 
 void Computer::ReadFile(string filePath)
 {
-	ifstream file;
+	//ifstream word_file;
 	std::ifstream file(filePath);
 	for (std::string word; file >> word; )
 	{

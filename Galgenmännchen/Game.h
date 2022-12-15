@@ -1,8 +1,6 @@
 #pragma once
+#include "IPlayer.h"
 #include <vector>
-
-class IPlayer;  // forward declaration
-
 
 enum Gamemodes
 {
@@ -18,22 +16,25 @@ public:
 
 	void Initialize();
 	void StartRound();
+
+private:
 	void GameTurn();
 	void PressAnyKeyToContinue();
 	void PrintRules();
 	void PrintHangman(int wrongGuesses);
 	int	 ChooseGamemode();
 	void CreatePlayers();
+	void ShufflePlayers();
+	void PrintGuessWord();
 
-private:
 	std::vector<IPlayer*> mPlayers;
-	int			mNumberOfPlayers;
-	int			mGamemode;
-	char*		mGuessWord;
-	char*		mOutputString;
-	char*		mCorrectLetters;
-	char*		mAllGuessedLetters;
-	bool		mSwap;
+	int				mNumberOfPlayers;
+	int				mGamemode;
+	string			mGuessWord;
+	string			mOutputString;
+	vector<char>	mAllGuessedLetters;
+	int				mWrongGuesses;
+	bool			mSwap;
 
 
 

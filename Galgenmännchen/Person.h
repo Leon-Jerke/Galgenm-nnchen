@@ -1,6 +1,7 @@
 #pragma once
-#include "Player.h"
+#include "IPlayer.h"
 #include <string>
+
 using namespace std;
 
 class Person : public IPlayer

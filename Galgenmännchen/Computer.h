@@ -1,5 +1,5 @@
 #pragma once
-#include "Player.h"
+#include "IPlayer.h"
 #include <string>
 #include <set>
 
