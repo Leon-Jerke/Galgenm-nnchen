@@ -10,11 +10,12 @@ using namespace std;
 constexpr auto MIN_PLAYER_NUMBER = 2;
 constexpr auto MAX_TRYS = 10;
 
-Game::Game() :	mGuessWord(nullptr),
+Game::Game() :	mGuessWord(),
 				mNumberOfPlayers(0),
 				mGamemode(0),
+				mWrongGuesses(0),
 				mSwap(false),
-				mOutputString(nullptr),
+				mOutputString(),
 				mAllGuessedLetters()
 {
 	
@@ -28,7 +29,17 @@ void Game::Initialize()
 	PrintRules();
 	PressAnyKeyToContinue();
 
-	mGamemode = ChooseGamemode();
+	// Wähle den Spielmodus
+	do {
+		std::cout << "Wie moechtest du spielen? (1 = Spieler vs Computer) (2 = Spieler vs Spieler)" << std::endl;
+		if (!(std::cin >> mGamemode) || (mGamemode != 1 && mGamemode != 2))
+		{
+			std::cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			std::cout << std::endl << "Die Eingabe wurde leider nicht erkannt, bitte versuche es erneut :/" << std::endl;
+		}
+	} while (mGamemode != 1 && mGamemode != 2);
+
 
 	switch (mGamemode)
 	{
@@ -44,7 +55,6 @@ void Game::Initialize()
 				std::cout << std::endl << "Die Eingabe wurde leider nicht erkannt, bitte versuche es erneut :/" << std::endl;
 			}
 		} while (difficulty != 1 && difficulty != 2 && difficulty != 3);
-		std::cin >> difficulty;
 		mPlayers.push_back(new Computer(difficulty));
 		CreatePlayers();
 	}
@@ -66,7 +76,7 @@ void Game::StartRound()
 {
 	ShufflePlayers();
 
-	std::cout << mPlayers[0] << ", gebe das zu erratende Wort ein: " << std::endl;
+	std::cout << mPlayers[0]->GetName() << ", gebe das zu erratende Wort ein: " << std::endl;
 	cin >> mGuessWord;
 	PressAnyKeyToContinue();
 	bool has_won = false;
@@ -86,30 +96,59 @@ void Game::StartRound()
 			PrintHangman(mWrongGuesses);
 
 			char guessed_letter;
+			bool proceed = false;
 			std::cout << std::endl << "Gib einen Buchstaben ein: ";
-			std::cin >> guessed_letter;
+
+			do // Frage solange nach einem Buchstaben, bis ein neuer Buchstabe geraten wird
+			{
+				do // Frage solange nach einer Eingabe bis ein Buchstabe eingegeben wurde
+				{
+					std::cin >> guessed_letter;
+					if (!std::isalpha(guessed_letter))
+					{
+						std::cout << std::endl << "Die Eingabe wurde nicht erkannt. Bitte gib einen Buchstaben ein" << std::endl;
+					}
+				} while (!std::isalpha(guessed_letter));
+
+				if (ContainsChar(mAllGuessedLetters, guessed_letter))
+				{
+					std::cout << std::endl << "Der Buchstabe wurde bereits geraten. Versuche einen anderen. " << std::endl;
+				}
+				else 
+				{
+					mAllGuessedLetters.push_back(guessed_letter);
+					proceed = true;
+				}
+			} while (!proceed);
+
+			if (ContainsChar(mGuessWord, guessed_letter))
+			{
+				std::cout << "Korrekt! Der Buchstabe " << guessed_letter << " ist im Wort enthalten" << std::endl;
+				if (PrintGuessWord())
+				{
+					std::cout << std::endl << "Glueckwunsch! " << mPlayers[i]->GetName() << " hat gewonnen!" << std::endl;
+					mPlayers[i]->IncreaseScore();
+					has_won = true;
+				}
+			}
+			else
+			{
+				std::cout << "Falsch! Der Buchstabe " << guessed_letter << " ist leider nicht im Wort enthalten" << std::endl;
+				mWrongGuesses++;
+				if (mWrongGuesses == MAX_TRYS)
+				{
+					std::cout << std::endl << "Das Spiel ist vorbei! Keiner konnte das Wort erraten. Der Spielleiter " << mPlayers[0]->GetName() << " hat gewonnen." << std::endl;
+					mPlayers[0]->IncreaseScore();
+				}
+			}
+			PressAnyKeyToContinue();
 		}
+		std::cout << std::endl << "Moechtet ihr erneut spielen" << std::endl;
 	}
 }
 
 void Game::GameTurn()
 {
-}
-
-int Game::ChooseGamemode()
-{
-	int gamemode;
-	do {
-		std::cout << "Wie moechtest du spielen? (1 = Spieler vs Computer) (2 = Spieler vs Spieler)" << std::endl;
-		if (!(std::cin >> gamemode) || (gamemode != 1 && gamemode != 2))
-		{
-			std::cin.clear();
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			std::cout << std::endl << "Die Eingabe wurde leider nicht erkannt, bitte versuche es erneut :/" << std::endl;
-		}
-	} while (gamemode != 1 && gamemode != 2);
-
-	return gamemode;
 }
 
 void Game::CreatePlayers()
@@ -150,19 +189,39 @@ void Game::ShufflePlayers() {
 
 }
 
-void Game::PrintGuessWord()
+bool Game::PrintGuessWord()
 {
+	bool gameWon = true;
 	for (int i = 0; i < mGuessWord.length(); i++)
 	{
-		if (std::find(mAllGuessedLetters.begin(), mAllGuessedLetters.end(), tolower(mGuessWord[i])) != mAllGuessedLetters.end())
+		if (ContainsChar(mAllGuessedLetters, mGuessWord[i]))
 		{
 			std::cout << mGuessWord[i] << " ";
 		}
 		else
 		{
 			std::cout << "_ ";
+			gameWon = false;
 		}
 	}
+	return gameWon;
+}
+
+bool Game::ContainsChar(std::vector<char> vector, char c) 
+{
+	for (int i = 0; i < vector.size(); i++) {
+		if (tolower(vector.at(i)) == tolower(c))
+			return true;
+	}
+	return false;
+}
+
+bool Game::ContainsChar(std::string str, char c) {
+	for (int i = 0; i < str.length(); i++) {
+		if (tolower(str.at(i)) == tolower(c))
+			return true;
+	}
+	return false;
 }
 
 void Game::PrintRules()
@@ -351,6 +410,7 @@ void Game::PrintHangman(int wrongGuesses)
 
 void Game::PressAnyKeyToContinue()
 {
+	std::cout << std::endl;
 	system("pause");
 	system("cls");
 }

@@ -16,9 +16,9 @@ public:
 		return mName;
 	}
 
-	void SetScore(int score)
+	void IncreaseScore()
 	{
-		mScore = score;
+		mScore++;
 	}
 
 	int GetScore()

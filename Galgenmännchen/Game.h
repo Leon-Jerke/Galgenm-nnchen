@@ -24,8 +24,10 @@ private:
 	void PrintHangman(int wrongGuesses);
 	int	 ChooseGamemode();
 	void CreatePlayers();
+	bool ContainsChar(vector<char> vec, char c);
+	bool ContainsChar(string string, char c);
 	void ShufflePlayers();
-	void PrintGuessWord();
+	bool PrintGuessWord();
 
 	std::vector<IPlayer*> mPlayers;
 	int				mNumberOfPlayers;
