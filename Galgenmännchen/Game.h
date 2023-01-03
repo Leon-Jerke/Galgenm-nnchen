@@ -1,5 +1,6 @@
 #pragma once
 #include "IPlayer.h"
+#include "Logger.h"
 #include <vector>
 
 enum Gamemodes
@@ -14,11 +15,10 @@ public:
 	Game();
 	~Game() {};
 
-	void Initialize();
-	void StartRound();
+	void Setup();
+	bool StartRound();
 
 private:
-	void GameTurn();
 	void PressAnyKeyToContinue();
 	void PrintRules();
 	void PrintHangman(int wrongGuesses);
@@ -37,6 +37,7 @@ private:
 	vector<char>	mAllGuessedLetters;
 	int				mWrongGuesses;
 	bool			mSwap;
+	Logger*			mLogger;
 
 
 

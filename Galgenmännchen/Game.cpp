@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Person.h"
 #include "Computer.h"
+#include "Logger.h"
 #include <iostream>
 #include <algorithm>
 #include <random>
@@ -18,10 +19,10 @@ Game::Game() :	mGuessWord(),
 				mOutputString(),
 				mAllGuessedLetters()
 {
-	
+	mLogger = new Logger("GameLog.txt");
 }
 
-void Game::Initialize()
+void Game::Setup()
 {
 	std::cout << "Willkomen zu Galgenmaennchen!" << std::endl
 	<< "Ein Projekt von Leo :D" << std::endl;
@@ -72,11 +73,12 @@ void Game::Initialize()
 	StartRound();
 }
 
-void Game::StartRound()
-{
-	ShufflePlayers();
-
-	std::cout << mPlayers[0]->GetName() << ", gebe das zu erratende Wort ein: " << std::endl;
+bool Game::StartRound()
+{ 
+	mAllGuessedLetters.clear(); // Zu Beginn die erratenten Buchstaben zurücksetzen
+	mWrongGuesses = 0;			// Anzahl an falschen Versuchen zurücksetzen
+	ShufflePlayers();			// Spieler mischeln und Spielleiter bestimmen
+	mLogger->Log(mPlayers[0]->GetName() + ", gebe das zu erratende Wort ein: ");
 	cin >> mGuessWord;
 	PressAnyKeyToContinue();
 	bool has_won = false;
@@ -84,35 +86,38 @@ void Game::StartRound()
 	{
 		for (int i = 1; i < mPlayers.size(); i++)
 		{
-			std::cout << std::endl << mPlayers[i]->GetName() << " ist an der Reihe!" << std::endl;
+			mLogger->Log(mPlayers[i]->GetName() + " ist an der Reihe!");
 
 			PrintGuessWord();
-			std::cout << std::endl << "Geratene Buchstaben: ";
+			mLogger->Log("Geratene Buchstaben: ");
+			string guessedLetters = "";
 			for (int j = 0; j < mAllGuessedLetters.size(); j++)
 			{
-				std::cout << mAllGuessedLetters[j] << ", ";
+				guessedLetters += mAllGuessedLetters[j] + ", ";
 			}
+			mLogger->Log(guessedLetters);
 
 			PrintHangman(mWrongGuesses);
 
 			char guessed_letter;
 			bool proceed = false;
-			std::cout << std::endl << "Gib einen Buchstaben ein: ";
+			mLogger->Log("Gib einen Buchstaben ein: ");
 
 			do // Frage solange nach einem Buchstaben, bis ein neuer Buchstabe geraten wird
 			{
 				do // Frage solange nach einer Eingabe bis ein Buchstabe eingegeben wurde
 				{
 					std::cin >> guessed_letter;
+					mLogger->Log("Geratener Buchstabe: " + guessedLetters);
 					if (!std::isalpha(guessed_letter))
 					{
-						std::cout << std::endl << "Die Eingabe wurde nicht erkannt. Bitte gib einen Buchstaben ein" << std::endl;
+						mLogger->Log("Die Eingabe wurde nicht erkannt. Bitte gib einen Buchstaben ein");
 					}
 				} while (!std::isalpha(guessed_letter));
 
 				if (ContainsChar(mAllGuessedLetters, guessed_letter))
 				{
-					std::cout << std::endl << "Der Buchstabe wurde bereits geraten. Versuche einen anderen. " << std::endl;
+					mLogger->Log("Der Buchstabe wurde bereits geraten. Versuche einen anderen. ");
 				}
 				else 
 				{
@@ -123,44 +128,58 @@ void Game::StartRound()
 
 			if (ContainsChar(mGuessWord, guessed_letter))
 			{
-				std::cout << "Korrekt! Der Buchstabe " << guessed_letter << " ist im Wort enthalten" << std::endl;
+				mLogger->Log(string("Korrekt! Der Buchstabe ") + guessed_letter + " ist im Wort enthalten"); // Will man mehrere Zeichenfolgen zu einem String zusammenfügen, muss die erste Zeichenfolge explizit zu einem string gecasted werden
 				if (PrintGuessWord())
 				{
-					std::cout << std::endl << "Glueckwunsch! " << mPlayers[i]->GetName() << " hat gewonnen!" << std::endl;
+					mLogger->Log(string("Glueckwunsch! ") + mPlayers[i]->GetName() + " hat gewonnen!");
 					mPlayers[i]->IncreaseScore();
+					mLogger->Log(string(mPlayers[i]->GetName()) + " hat einen Score von " + to_string(mPlayers[i]->GetScore()));
 					has_won = true;
 				}
 			}
 			else
 			{
-				std::cout << "Falsch! Der Buchstabe " << guessed_letter << " ist leider nicht im Wort enthalten" << std::endl;
+				mLogger->Log(string("Falsch! Der Buchstabe ") + guessed_letter + " ist leider nicht im Wort enthalten");
 				mWrongGuesses++;
 				if (mWrongGuesses == MAX_TRYS)
 				{
-					std::cout << std::endl << "Das Spiel ist vorbei! Keiner konnte das Wort erraten. Der Spielleiter " << mPlayers[0]->GetName() << " hat gewonnen." << std::endl;
+					mLogger->Log(string("Das Spiel ist vorbei! Keiner konnte das Wort erraten. Der Spielleiter ") + mPlayers[0]->GetName() + " hat gewonnen.");
 					mPlayers[0]->IncreaseScore();
+					mLogger->Log(string(mPlayers[0]->GetName()) + " hat einen Score von " + to_string(mPlayers[i]->GetScore()));
 				}
 			}
 			PressAnyKeyToContinue();
 		}
-		std::cout << std::endl << "Moechtet ihr erneut spielen" << std::endl;
 	}
-}
-
-void Game::GameTurn()
-{
+	mLogger->Log("Moechtet ihr erneut spielen? (y/n)");
+	char input;
+	do // Frage solange nach einer Eingabe bis eine richtige Antwort gegeben wurde
+	{
+		std::cin >> input;
+		mLogger->Log("Eingabe: " + input);
+		switch (tolower(input))
+		{
+		case 'y':
+			return true;
+		case 'n':
+			return false;
+		default:
+			mLogger->Log("Die Eingabe wurde nicht erkannt. Bitte gib einen Buchstaben ein");
+			break;
+		}
+	} while (true);
 }
 
 void Game::CreatePlayers()
 {
-	std::cout << "Wie viele Spieler?" << std::endl;
+	mLogger->Log("Wie viele Spieler?");
 	while (mNumberOfPlayers < MIN_PLAYER_NUMBER)
-	{
+	{	
 		if (!(std::cin >> mNumberOfPlayers))
 		{
 			std::cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			std::cout << std::endl << "Die Eingabe wurde leider nicht erkannt, bitte versuche es erneut :/" << std::endl;
+			mLogger->Log("Die Eingabe wurde leider nicht erkannt, bitte versuche es erneut :/");
 		}
 		else if (mNumberOfPlayers < MIN_PLAYER_NUMBER)
 		{
@@ -169,22 +188,27 @@ void Game::CreatePlayers()
 			std::cout << std::endl << "Es werden mindestens 2 Spieler benoetigt" << std::endl;
 		}
 	}
+	mLogger->Log("");
+	mLogger->Log("Anzahl Spieler: " + mNumberOfPlayers);
+
 	for (size_t i = 1; i <= mNumberOfPlayers; i++)
 	{
-		std::cout << "Wie heisst Spieler " << i << " ?" << std::endl;
+		mLogger->Log(string("Wie heisst Spieler ") + to_string(i) + " ?");
 		std::string p_name;
 		std::cin >> p_name;
+		mLogger->Log(string("Spieler ") + to_string(i) + " heisst " + p_name);
 		mPlayers.push_back(new Person(p_name));
 	}
 }
 
 void Game::ShufflePlayers() {
+	mLogger->Log("Die Spieler werden gemischelt!");
 	std::shuffle(mPlayers.begin(), mPlayers.end(), std::mt19937{ std::random_device{}() });
-	std::cout << std::endl << mPlayers[0]->GetName() << " ist der Spielleiter" << std::endl;
-	std::cout << "Die Reihenfolge der Spieler ist: " << std::endl;
+	mLogger->Log(mPlayers[0]->GetName() + " ist der Spielleiter");
+	mLogger->Log("Die Reihenfolge der Spieler ist: ");
 	for (int i = 1; i < mPlayers.size(); i++)
 	{
-		std::cout << i << ": " << mPlayers[i]->GetName() << std::endl;
+		mLogger->Log(to_string(i) + ": " + mPlayers[i]->GetName());
 	}
 
 }
@@ -192,18 +216,20 @@ void Game::ShufflePlayers() {
 bool Game::PrintGuessWord()
 {
 	bool gameWon = true;
+	string guessWord;
 	for (int i = 0; i < mGuessWord.length(); i++)
 	{
 		if (ContainsChar(mAllGuessedLetters, mGuessWord[i]))
 		{
-			std::cout << mGuessWord[i] << " ";
+			guessWord += mGuessWord[i] + " ";
 		}
 		else
 		{
-			std::cout << "_ ";
+			guessWord += "_ ";
 			gameWon = false;
 		}
 	}
+	mLogger->Log(guessWord);
 	return gameWon;
 }
 
@@ -226,12 +252,14 @@ bool Game::ContainsChar(std::string str, char c) {
 
 void Game::PrintRules()
 {
-	std::cout << std::endl << "Die Regeln: " << std::endl;
-	std::cout << "Regel 2: ..." << std::endl;
-	std::cout << "Regel 1: ..." << std::endl;
-	std::cout << "Regel 2: ..." << std::endl;
-	std::cout << "Regel 3: ..." << std::endl;
-	std::cout << "Regel 4: ..." << std::endl;
+	mLogger->Log("");
+	mLogger->Log("Die Regeln: ");
+	mLogger->Log("Regel 1: ...");
+	mLogger->Log("Regel 2: ...");
+	mLogger->Log("Regel 3: ...");
+	mLogger->Log("Regel 4: ...");
+	mLogger->Log("Regel 5: ...");
+	mLogger->Log("Regel 6: ...");
 }
 
 void Game::PrintHangman(int wrongGuesses)
@@ -239,169 +267,169 @@ void Game::PrintHangman(int wrongGuesses)
 	switch (wrongGuesses)
 	{
 	case 0:
-		std::cout << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << std::endl;
+		mLogger->Log("");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*                 *");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("");
 		break;
 	case 1:
-		std::cout << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*    _____        *" << std::endl;
-		std::cout << "*   /     \\       *" << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << std::endl;
+		mLogger->Log("");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*    _____        *");
+		mLogger->Log("*   /     \\       *");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("");
 		break;
 	case 2:
-		std::cout << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << "*                 *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |____        *" << std::endl;
-		std::cout << "*   /     \\       *" << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << std::endl;
+		mLogger->Log("");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("*                 *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |____        *");
+		mLogger->Log("*   /     \\       *");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("");
 		break;
 	case 3:
-		std::cout << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << "*     ____        *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |____        *" << std::endl;
-		std::cout << "*   /     \\       *" << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << std::endl;
+		mLogger->Log("");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("*     ____        *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |____        *");
+		mLogger->Log("*   /     \\       *");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("");
 		break;
 	case 4:
-		std::cout << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << "*     ____        *" << std::endl;
-		std::cout << "*    |/           *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |____        *" << std::endl;
-		std::cout << "*   /     \\       *" << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << std::endl;
+		mLogger->Log("");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("*     ____        *");
+		mLogger->Log("*    |/           *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |____        *");
+		mLogger->Log("*   /     \\       *");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("");
 		break;
 	case 5:
-		std::cout << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << "*     ____        *" << std::endl;
-		std::cout << "*    |/  |        *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |____        *" << std::endl;
-		std::cout << "*   /     \\       *" << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << std::endl;
+		mLogger->Log("");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("*     ____        *");
+		mLogger->Log("*    |/  |        *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |____        *");
+		mLogger->Log("*   /     \\       *");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("");
 		break;
 	case 6:
-		std::cout << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << "*     ____        *" << std::endl;
-		std::cout << "*    |/  |        *" << std::endl;
-		std::cout << "*    |  (_)       *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |____        *" << std::endl;
-		std::cout << "*   /     \\       *" << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << std::endl;
+		mLogger->Log("");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("*     ____        *");
+		mLogger->Log("*    |/  |        *");
+		mLogger->Log("*    |  (_)       *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |____        *");
+		mLogger->Log("*   /     \\       *");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("");
 		break;
 	case 7:
-		std::cout << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << "*     ____        *" << std::endl;
-		std::cout << "*    |/  |        *" << std::endl;
-		std::cout << "*    |  (_)       *" << std::endl;
-		std::cout << "*    |   |        *" << std::endl;
-		std::cout << "*    |   |        *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |____        *" << std::endl;
-		std::cout << "*   /     \\       *" << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << std::endl;
+		mLogger->Log("");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("*     ____        *");
+		mLogger->Log("*    |/  |        *");
+		mLogger->Log("*    |  (_)       *");
+		mLogger->Log("*    |   |        *");
+		mLogger->Log("*    |   |        *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |____        *");
+		mLogger->Log("*   /     \\       *");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("");
 		break;
 	case 8:
-		std::cout << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << "*     ____        *" << std::endl;
-		std::cout << "*    |/  |        *" << std::endl;
-		std::cout << "*    |  (_)       *" << std::endl;
-		std::cout << "*    |  \\|        *" << std::endl;
-		std::cout << "*    |   |        *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |____        *" << std::endl;
-		std::cout << "*   /     \\       *" << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << std::endl;
+		mLogger->Log("");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("*     ____        *");
+		mLogger->Log("*    |/  |        *");
+		mLogger->Log("*    |  (_)       *");
+		mLogger->Log("*    |  \\|        *");
+		mLogger->Log("*    |   |        *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |____        *");
+		mLogger->Log("*   /     \\       *");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("");
 		break;
 	case 9:
-		std::cout << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << "*     ____        *" << std::endl;
-		std::cout << "*    |/  |        *" << std::endl;
-		std::cout << "*    |  (_)       *" << std::endl;
-		std::cout << "*    |  \\|/       *" << std::endl;
-		std::cout << "*    |   |        *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |____        *" << std::endl;
-		std::cout << "*   /     \\       *" << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << std::endl;
+		mLogger->Log("");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("*     ____        *");
+		mLogger->Log("*    |/  |        *");
+		mLogger->Log("*    |  (_)       *");
+		mLogger->Log("*    |  \\|/       *");
+		mLogger->Log("*    |   |        *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |____        *");
+		mLogger->Log("*   /     \\       *");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("");
 		break;
 	case 10:
-		std::cout << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << "*     ____        *" << std::endl;
-		std::cout << "*    |/  |        *" << std::endl;
-		std::cout << "*    |  (_)       *" << std::endl;
-		std::cout << "*    |  \\|/       *" << std::endl;
-		std::cout << "*    |   |        *" << std::endl;
-		std::cout << "*    |  / \\       *" << std::endl;
-		std::cout << "*    |            *" << std::endl;
-		std::cout << "*    |____        *" << std::endl;
-		std::cout << "*   /     \\       *" << std::endl;
-		std::cout << "* * * * * * * * * *" << std::endl;
-		std::cout << std::endl;
+		mLogger->Log("");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("*     ____        *");
+		mLogger->Log("*    |/  |        *");
+		mLogger->Log("*    |  (_)       *");
+		mLogger->Log("*    |  \\|/       *");
+		mLogger->Log("*    |   |        *");
+		mLogger->Log("*    |  / \\       *");
+		mLogger->Log("*    |            *");
+		mLogger->Log("*    |____        *");
+		mLogger->Log("*   /     \\       *");
+		mLogger->Log("* * * * * * * * * *");
+		mLogger->Log("");
 		break;
 	default:
 		break;
