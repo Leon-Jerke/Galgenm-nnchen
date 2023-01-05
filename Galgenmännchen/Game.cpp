@@ -5,6 +5,7 @@
 #include <iostream>
 #include <algorithm>
 #include <random>
+#include <string>
 
 using namespace std;
 
@@ -24,15 +25,16 @@ Game::Game() :	mGuessWord(),
 
 void Game::Setup()
 {
-	std::cout << "Willkomen zu Galgenmaennchen!" << std::endl
-	<< "Ein Projekt von Leo :D" << std::endl;
+	mLogger->Log("Willkomen zu Galgenmaennchen!");
+	mLogger->Log("Ein Projekt von Leo :D");
+	mLogger->Log("");
 
 	PrintRules();
 	PressAnyKeyToContinue();
 
 	// Wähle den Spielmodus
 	do {
-		std::cout << "Wie moechtest du spielen? (1 = Spieler vs Computer) (2 = Spieler vs Spieler)" << std::endl;
+		mLogger->Log("Wie moechtest du spielen? (1 = Spieler vs Computer) (2 = Spieler vs Spieler)");
 		if (!(std::cin >> mGamemode) || (mGamemode != 1 && mGamemode != 2))
 		{
 			std::cin.clear();
@@ -40,7 +42,8 @@ void Game::Setup()
 			std::cout << std::endl << "Die Eingabe wurde leider nicht erkannt, bitte versuche es erneut :/" << std::endl;
 		}
 	} while (mGamemode != 1 && mGamemode != 2);
-
+	mLogger->LogOnly("Gewaehlter Spielmodus: " + to_string(mGamemode));
+	mLogger->Log("");
 
 	switch (mGamemode)
 	{
@@ -48,7 +51,7 @@ void Game::Setup()
 	{
 		int difficulty;
 		do {
-			std::cout << std::endl << "Wie stark soll der Computer sein? (1 = schwach, 2 = mittel, 3 = stark)" << std::endl;
+			mLogger->Log("Wie stark soll der Computer sein? (1 = schwach, 2 = mittel, 3 = stark)");
 			if (!(std::cin >> difficulty) || (difficulty != 1 && difficulty != 2 && difficulty != 3))
 			{
 				std::cin.clear();
@@ -56,6 +59,7 @@ void Game::Setup()
 				std::cout << std::endl << "Die Eingabe wurde leider nicht erkannt, bitte versuche es erneut :/" << std::endl;
 			}
 		} while (difficulty != 1 && difficulty != 2 && difficulty != 3);
+		mLogger->LogOnly("Gewaehlter Schwierigkeitsgrad: " + to_string(difficulty));
 		mPlayers.push_back(new Computer(difficulty));
 		CreatePlayers();
 	}
@@ -70,14 +74,16 @@ void Game::Setup()
 		break;
 	}
 
+	PressAnyKeyToContinue();
 	StartRound();
 }
 
 bool Game::StartRound()
 { 
-	mAllGuessedLetters.clear(); // Zu Beginn die erratenten Buchstaben zurücksetzen
+	mAllGuessedLetters.clear(); // Zu Beginn die erratenen Buchstaben zurücksetzen
 	mWrongGuesses = 0;			// Anzahl an falschen Versuchen zurücksetzen
 	ShufflePlayers();			// Spieler mischeln und Spielleiter bestimmen
+	mLogger->Log("");
 	mLogger->Log(mPlayers[0]->GetName() + ", gebe das zu erratende Wort ein: ");
 	cin >> mGuessWord;
 	PressAnyKeyToContinue();
@@ -89,13 +95,14 @@ bool Game::StartRound()
 			mLogger->Log(mPlayers[i]->GetName() + " ist an der Reihe!");
 
 			PrintGuessWord();
-			mLogger->Log("Geratene Buchstaben: ");
 			string guessedLetters = "";
 			for (int j = 0; j < mAllGuessedLetters.size(); j++)
 			{
-				guessedLetters += mAllGuessedLetters[j] + ", ";
+				guessedLetters.push_back(mAllGuessedLetters[j]);
+				guessedLetters.push_back(',');
 			}
-			mLogger->Log(guessedLetters);
+			mLogger->Log("");
+			mLogger->Log("Geratene Buchstaben: " + guessedLetters);
 
 			PrintHangman(mWrongGuesses);
 
@@ -108,7 +115,7 @@ bool Game::StartRound()
 				do // Frage solange nach einer Eingabe bis ein Buchstabe eingegeben wurde
 				{
 					std::cin >> guessed_letter;
-					mLogger->Log("Geratener Buchstabe: " + guessedLetters);
+					mLogger->LogOnly("Geratener Buchstabe: " + guessedLetters);
 					if (!std::isalpha(guessed_letter))
 					{
 						mLogger->Log("Die Eingabe wurde nicht erkannt. Bitte gib einen Buchstaben ein");
@@ -150,6 +157,7 @@ bool Game::StartRound()
 			}
 			PressAnyKeyToContinue();
 		}
+		mLogger->LogOnly("------------------------------------------------");
 	}
 	mLogger->Log("Moechtet ihr erneut spielen? (y/n)");
 	char input;
@@ -172,6 +180,7 @@ bool Game::StartRound()
 
 void Game::CreatePlayers()
 {
+	mLogger->Log("");
 	mLogger->Log("Wie viele Spieler?");
 	while (mNumberOfPlayers < MIN_PLAYER_NUMBER)
 	{	
@@ -188,23 +197,25 @@ void Game::CreatePlayers()
 			std::cout << std::endl << "Es werden mindestens 2 Spieler benoetigt" << std::endl;
 		}
 	}
-	mLogger->Log("");
-	mLogger->Log("Anzahl Spieler: " + mNumberOfPlayers);
+	mLogger->LogOnly("Anzahl Spieler: " + to_string(mNumberOfPlayers));
 
 	for (size_t i = 1; i <= mNumberOfPlayers; i++)
 	{
+		mLogger->Log("");
 		mLogger->Log(string("Wie heisst Spieler ") + to_string(i) + " ?");
-		std::string p_name;
+		std::string p_name = "";
 		std::cin >> p_name;
-		mLogger->Log(string("Spieler ") + to_string(i) + " heisst " + p_name);
+		mLogger->LogOnly(string("Spieler ") + to_string(i) + " heisst " + p_name);
 		mPlayers.push_back(new Person(p_name));
 	}
 }
 
 void Game::ShufflePlayers() {
 	mLogger->Log("Die Spieler werden gemischelt!");
+	mLogger->Log("");
 	std::shuffle(mPlayers.begin(), mPlayers.end(), std::mt19937{ std::random_device{}() });
 	mLogger->Log(mPlayers[0]->GetName() + " ist der Spielleiter");
+	mLogger->Log("");
 	mLogger->Log("Die Reihenfolge der Spieler ist: ");
 	for (int i = 1; i < mPlayers.size(); i++)
 	{
@@ -216,18 +227,21 @@ void Game::ShufflePlayers() {
 bool Game::PrintGuessWord()
 {
 	bool gameWon = true;
-	string guessWord;
+	string guessWord = "";
 	for (int i = 0; i < mGuessWord.length(); i++)
 	{
 		if (ContainsChar(mAllGuessedLetters, mGuessWord[i]))
 		{
-			guessWord += mGuessWord[i] + " ";
+			//cout << mGuessWord[i] << " ";
+			guessWord.push_back(mGuessWord[i]);
 		}
 		else
 		{
-			guessWord += "_ ";
+			//cout << "_ ";
+			guessWord.push_back('_');
 			gameWon = false;
 		}
+		guessWord.push_back(' ');
 	}
 	mLogger->Log(guessWord);
 	return gameWon;

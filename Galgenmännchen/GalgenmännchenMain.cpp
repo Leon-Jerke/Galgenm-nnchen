@@ -17,7 +17,6 @@ int main()
 
     //return 0;
 
-    std::cout << "Hello World!\n";
     Game game = Game();
     game.Setup();
     bool continuePlaying = true;

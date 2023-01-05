@@ -15,3 +15,8 @@ void Logger::Log(string message)
 	mLogfile << message << endl;
 	cout << message << endl;
 }
+
+void Logger::LogOnly(string message)
+{
+	mLogfile << message << endl;
+}
