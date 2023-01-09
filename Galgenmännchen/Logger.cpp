@@ -1,13 +1,25 @@
 #include "Logger.h"
 
-Logger::Logger(string filename)
+Logger::Logger()
 {
-	mLogfile.open(filename);
+	mLogfile.open("GameLog.txt");
 }
 
 Logger::~Logger()
 {
 	mLogfile.close();
+}
+
+Logger* Logger::mLoggerInstance = nullptr; // Pointer muss einmal deklariert werden
+
+Logger* Logger::GetInstance()
+{
+	if (mLoggerInstance == nullptr)		// Wenn noch kein Logger Objekt existiert, muss erst eins erzeugt werden
+	{
+		mLoggerInstance = new Logger();
+	}
+
+	return mLoggerInstance;
 }
 
 void Logger::Log(string message)

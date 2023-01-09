@@ -17,7 +17,7 @@ string Computer::ChooseWord()
 	return "test";
 }
 
-char Computer::GuessLetter()
+string Computer::GuessLetterOrWord(vector<char>& guessedLetters)
 {
 	return 0;
 }

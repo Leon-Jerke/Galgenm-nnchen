@@ -14,23 +14,27 @@ Gewaehlter Spielmodus: 2
 
 
 Wie viele Spieler?
-Anzahl Spieler: 2
+Anzahl Spieler: 3
 
 Wie heisst Spieler 1 ?
-Spieler 1 heisst Leon
+Spieler 1 heisst Test
 
 Wie heisst Spieler 2 ?
-Spieler 2 heisst Kevin
+Spieler 2 heisst Leon
+
+Wie heisst Spieler 3 ?
+Spieler 3 heisst Kurt
 Die Spieler werden gemischelt!
 
-Kevin ist der Spielleiter
+Test ist der Spielleiter
 
 Die Reihenfolge der Spieler ist: 
 1: Leon
+2: Kurt
 
-Kevin, gebe das zu erratende Wort ein: 
+Test, gebe das zu erratende Wort ein: 
 Leon ist an der Reihe!
-_ _ _ _ _ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ 
 
 Geratene Buchstaben: 
 
@@ -46,15 +50,14 @@ Geratene Buchstaben:
 *                 *
 * * * * * * * * * *
 
-Gib einen Buchstaben ein: 
-Geratener Buchstabe: 
-Korrekt! Der Buchstabe T ist im Wort enthalten
-T _ _ _ t _ _ _ _ _ _ _ 
-------------------------------------------------
+Gib einen Buchstaben oder das volle Wort ein: 
+Geratener Buchstabe: p
+Korrekt! Der Buchstabe p ist im Wort enthalten
+P _ _ _ _ _ _ 
 Leon ist an der Reihe!
-T _ _ _ t _ _ _ _ _ _ _ 
+P _ _ _ _ _ _ 
 
-Geratene Buchstaben: T,
+Geratene Buchstaben: p,
 
 * * * * * * * * * *
 *                 *
@@ -68,37 +71,35 @@ Geratene Buchstaben: T,
 *                 *
 * * * * * * * * * *
 
-Gib einen Buchstaben ein: 
-Geratener Buchstabe: T,
+Gib einen Buchstaben oder das volle Wort ein: 
+Geratener Buchstabe: r
+Korrekt! Der Buchstabe r ist im Wort enthalten
+P r _ _ _ _ _ 
+Leon ist an der Reihe!
+P r _ _ _ _ _ 
+
+Geratene Buchstaben: p,r,
+
+* * * * * * * * * *
+*                 *
+*                 *
+*                 *
+*                 *
+*                 *
+*                 *
+*                 *
+*                 *
+*                 *
+* * * * * * * * * *
+
+Gib einen Buchstaben oder das volle Wort ein: 
+Geratener Buchstabe: o
 Korrekt! Der Buchstabe o ist im Wort enthalten
-T o _ _ t _ _ _ _ _ _ _ 
-------------------------------------------------
+P r o _ _ _ _ 
 Leon ist an der Reihe!
-T o _ _ t _ _ _ _ _ _ _ 
+P r o _ _ _ _ 
 
-Geratene Buchstaben: T,o,
-
-* * * * * * * * * *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-* * * * * * * * * *
-
-Gib einen Buchstaben ein: 
-Geratener Buchstabe: T,o,
-Korrekt! Der Buchstabe m ist im Wort enthalten
-T o m _ t _ _ _ _ _ _ _ 
-------------------------------------------------
-Leon ist an der Reihe!
-T o m _ t _ _ _ _ _ _ _ 
-
-Geratene Buchstaben: T,o,m,
+Geratene Buchstaben: p,r,o,
 
 * * * * * * * * * *
 *                 *
@@ -112,36 +113,13 @@ Geratene Buchstaben: T,o,m,
 *                 *
 * * * * * * * * * *
 
-Gib einen Buchstaben ein: 
-Geratener Buchstabe: T,o,m,
-Korrekt! Der Buchstabe a ist im Wort enthalten
-T o m a t _ _ _ a _ _ _ 
-------------------------------------------------
-Leon ist an der Reihe!
-T o m a t _ _ _ a _ _ _ 
+Gib einen Buchstaben oder das volle Wort ein: 
+Geratener Buchstabe: k
+Falsch! Der Buchstabe k ist leider nicht im Wort enthalten
+Kurt ist an der Reihe!
+P r o _ _ _ _ 
 
-Geratene Buchstaben: T,o,m,a,
-
-* * * * * * * * * *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-* * * * * * * * * *
-
-Gib einen Buchstaben ein: 
-Geratener Buchstabe: T,o,m,a,
-Falsch! Der Buchstabe r ist leider nicht im Wort enthalten
-------------------------------------------------
-Leon ist an der Reihe!
-T o m a t _ _ _ a _ _ _ 
-
-Geratene Buchstaben: T,o,m,a,r,
+Geratene Buchstaben: p,r,o,k,
 
 * * * * * * * * * *
 *                 *
@@ -155,177 +133,39 @@ Geratene Buchstaben: T,o,m,a,r,
 *   /     \       *
 * * * * * * * * * *
 
-Gib einen Buchstaben ein: 
-Geratener Buchstabe: T,o,m,a,r,
-Falsch! Der Buchstabe f ist leider nicht im Wort enthalten
-------------------------------------------------
-Leon ist an der Reihe!
-T o m a t _ _ _ a _ _ _ 
+Gib einen Buchstaben oder das volle Wort ein: 
+Geratener Buchstabe: b
+Korrekt! Der Buchstabe b ist im Wort enthalten
+P r o b _ _ _ 
+Kurt ist an der Reihe!
+P r o b _ _ _ 
 
-Geratene Buchstaben: T,o,m,a,r,f,
+Geratene Buchstaben: p,r,o,k,b,
 
 * * * * * * * * * *
 *                 *
-*    |            *
-*    |            *
-*    |            *
-*    |            *
-*    |            *
-*    |            *
-*    |____        *
+*                 *
+*                 *
+*                 *
+*                 *
+*                 *
+*                 *
+*    _____        *
 *   /     \       *
 * * * * * * * * * *
 
-Gib einen Buchstaben ein: 
-Geratener Buchstabe: T,o,m,a,r,f,
-Falsch! Der Buchstabe g ist leider nicht im Wort enthalten
+Gib einen Buchstaben oder das volle Wort ein: 
+Korrekt! Du hast das Wort richtig erraten
+Kurt hat einen Score von 1
 ------------------------------------------------
-Leon ist an der Reihe!
-T o m a t _ _ _ a _ _ _ 
+Moechtet ihr erneut spielen? (y/n)
+n der Reihe!
+Die Spieler werden gemischelt!
 
-Geratene Buchstaben: T,o,m,a,r,f,g,
+Test ist der Spielleiter
 
-* * * * * * * * * *
-*     ____        *
-*    |            *
-*    |            *
-*    |            *
-*    |            *
-*    |            *
-*    |            *
-*    |____        *
-*   /     \       *
-* * * * * * * * * *
+Die Reihenfolge der Spieler ist: 
+1: Leon
+2: Kurt
 
-Gib einen Buchstaben ein: 
-Geratener Buchstabe: T,o,m,a,r,f,g,
-Falsch! Der Buchstabe z ist leider nicht im Wort enthalten
-------------------------------------------------
-Leon ist an der Reihe!
-T o m a t _ _ _ a _ _ _ 
-
-Geratene Buchstaben: T,o,m,a,r,f,g,z,
-
-* * * * * * * * * *
-*     ____        *
-*    |/           *
-*    |            *
-*    |            *
-*    |            *
-*    |            *
-*    |            *
-*    |____        *
-*   /     \       *
-* * * * * * * * * *
-
-Gib einen Buchstaben ein: 
-Geratener Buchstabe: T,o,m,a,r,f,g,z,
-Falsch! Der Buchstabe y ist leider nicht im Wort enthalten
-------------------------------------------------
-Leon ist an der Reihe!
-T o m a t _ _ _ a _ _ _ 
-
-Geratene Buchstaben: T,o,m,a,r,f,g,z,y,
-
-* * * * * * * * * *
-*     ____        *
-*    |/  |        *
-*    |            *
-*    |            *
-*    |            *
-*    |            *
-*    |            *
-*    |____        *
-*   /     \       *
-* * * * * * * * * *
-
-Gib einen Buchstaben ein: 
-Geratener Buchstabe: T,o,m,a,r,f,g,z,y,
-Falsch! Der Buchstabe x ist leider nicht im Wort enthalten
-------------------------------------------------
-Leon ist an der Reihe!
-T o m a t _ _ _ a _ _ _ 
-
-Geratene Buchstaben: T,o,m,a,r,f,g,z,y,x,
-
-* * * * * * * * * *
-*     ____        *
-*    |/  |        *
-*    |  (_)       *
-*    |            *
-*    |            *
-*    |            *
-*    |            *
-*    |____        *
-*   /     \       *
-* * * * * * * * * *
-
-Gib einen Buchstaben ein: 
-Geratener Buchstabe: T,o,m,a,r,f,g,z,y,x,
-Korrekt! Der Buchstabe c ist im Wort enthalten
-T o m a t _ _ _ a _ c _ 
-------------------------------------------------
-Leon ist an der Reihe!
-T o m a t _ _ _ a _ c _ 
-
-Geratene Buchstaben: T,o,m,a,r,f,g,z,y,x,c,
-
-* * * * * * * * * *
-*     ____        *
-*    |/  |        *
-*    |  (_)       *
-*    |            *
-*    |            *
-*    |            *
-*    |            *
-*    |____        *
-*   /     \       *
-* * * * * * * * * *
-
-Gib einen Buchstaben ein: 
-Geratener Buchstabe: T,o,m,a,r,f,g,z,y,x,c,
-Falsch! Der Buchstabe v ist leider nicht im Wort enthalten
-------------------------------------------------
-Leon ist an der Reihe!
-T o m a t _ _ _ a _ c _ 
-
-Geratene Buchstaben: T,o,m,a,r,f,g,z,y,x,c,v,
-
-* * * * * * * * * *
-*     ____        *
-*    |/  |        *
-*    |  (_)       *
-*    |   |        *
-*    |   |        *
-*    |            *
-*    |            *
-*    |____        *
-*   /     \       *
-* * * * * * * * * *
-
-Gib einen Buchstaben ein: 
-Geratener Buchstabe: T,o,m,a,r,f,g,z,y,x,c,v,
-Korrekt! Der Buchstabe n ist im Wort enthalten
-T o m a t _ n _ a _ c _ 
-------------------------------------------------
-Leon ist an der Reihe!
-T o m a t _ n _ a _ c _ 
-
-Geratene Buchstaben: T,o,m,a,r,f,g,z,y,x,c,v,n,
-
-* * * * * * * * * *
-*     ____        *
-*    |/  |        *
-*    |  (_)       *
-*    |   |        *
-*    |   |        *
-*    |            *
-*    |            *
-*    |____        *
-*   /     \       *
-* * * * * * * * * *
-
-Gib einen Buchstaben ein: 
-Geratener Buchstabe: T,o,m,a,r,f,g,z,y,x,c,v,n,
-Der Buchstabe wurde bereits geraten. Versuche einen anderen. 
-Geratener Buchstabe: T,o,m,a,r,f,g,z,y,x,c,v,n,
+Test, gebe das zu erratende Wort ein: 

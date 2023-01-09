@@ -22,23 +22,19 @@ private:
 	void PressAnyKeyToContinue();
 	void PrintRules();
 	void PrintHangman(int wrongGuesses);
-	int	 ChooseGamemode();
 	void CreatePlayers();
-	bool ContainsChar(vector<char> vec, char c);
-	bool ContainsChar(string string, char c);
+	bool ContainsChar(const vector<char>& vec, const char& c);
+	bool ContainsChar(const string& string, const char& c);
+	bool EqualStrings(const string& string1, const string& string2);
 	void ShufflePlayers();
 	bool PrintGuessWord();
+	bool GameTurn(IPlayer* player);
 
 	std::vector<IPlayer*> mPlayers;
 	int				mNumberOfPlayers;
 	int				mGamemode;
 	string			mGuessWord;
-	string			mOutputString;
 	vector<char>	mAllGuessedLetters;
 	int				mWrongGuesses;
-	bool			mSwap;
 	Logger*			mLogger;
-
-
-
 };

@@ -5,14 +5,16 @@
 
 using namespace std;
 
-class Logger
+class Logger						// Singleton Klasse = es kann nur ein einziges Objekt dieser Klasse erzeugt werden
 {
 public:
-	Logger(string filename);
-	~Logger();
-	void Log(string msg);
-	void LogOnly(string msg);
-
+	static Logger* GetInstance();	// Gibt einen Pointer auf ein Logger Objekt zurück
+	void Log(string msg);			// Logt den String und zeigt ihn in der Konsole an
+	void LogOnly(string msg);		// Logt den String ohne ihn anzuzeigen
 private:
-	ofstream mLogfile;
+	Logger();						// Konstruktor ist private damit keine Objekte vom Logger erzeugt werden können
+	~Logger();
+
+	static Logger* mLoggerInstance;	// Pointer auf das einzige existierende Logger Objekt
+	ofstream mLogfile;				// Log Datei
 };

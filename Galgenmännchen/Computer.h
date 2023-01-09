@@ -10,7 +10,7 @@ class Computer : public IPlayer
 public:
 	Computer(int difficulty);
 	string ChooseWord() override;
-	char GuessLetter() override;
+	string GuessLetterOrWord(vector<char>& guessedLetters) override;
 	void SetDifficulty(int difficulty);
 private:
 	void ReadFile(string filePath);

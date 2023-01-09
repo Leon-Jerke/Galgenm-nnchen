@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <random>
 #include <string>
+#include "Helper.cpp"
 
 using namespace std;
 
@@ -16,15 +17,14 @@ Game::Game() :	mGuessWord(),
 				mNumberOfPlayers(0),
 				mGamemode(0),
 				mWrongGuesses(0),
-				mSwap(false),
-				mOutputString(),
 				mAllGuessedLetters()
 {
-	mLogger = new Logger("GameLog.txt");
+	mLogger = Logger::GetInstance();
 }
 
 void Game::Setup()
 {
+	setlocale(LC_ALL, "de_DE");
 	mLogger->Log("Willkomen zu Galgenmaennchen!");
 	mLogger->Log("Ein Projekt von Leo :D");
 	mLogger->Log("");
@@ -85,75 +85,17 @@ bool Game::StartRound()
 	ShufflePlayers();			// Spieler mischeln und Spielleiter bestimmen
 	mLogger->Log("");
 	mLogger->Log(mPlayers[0]->GetName() + ", gebe das zu erratende Wort ein: ");
-	cin >> mGuessWord;
+	mGuessWord = mPlayers[0]->ChooseWord();
+	
 	PressAnyKeyToContinue();
 	bool has_won = false;
-	while (!has_won && mWrongGuesses < MAX_TRYS)
+	while (!has_won && mWrongGuesses < MAX_TRYS)	// Spiele solange, bis ein Spieler gewonnen hat oder die maximale Anzahl an Versuchen erreicht wurde
 	{
 		for (int i = 1; i < mPlayers.size(); i++)
 		{
-			mLogger->Log(mPlayers[i]->GetName() + " ist an der Reihe!");
-
-			PrintGuessWord();
-			string guessedLetters = "";
-			for (int j = 0; j < mAllGuessedLetters.size(); j++)
+			if (GameTurn(mPlayers[i]))
 			{
-				guessedLetters.push_back(mAllGuessedLetters[j]);
-				guessedLetters.push_back(',');
-			}
-			mLogger->Log("");
-			mLogger->Log("Geratene Buchstaben: " + guessedLetters);
-
-			PrintHangman(mWrongGuesses);
-
-			char guessed_letter;
-			bool proceed = false;
-			mLogger->Log("Gib einen Buchstaben ein: ");
-
-			do // Frage solange nach einem Buchstaben, bis ein neuer Buchstabe geraten wird
-			{
-				do // Frage solange nach einer Eingabe bis ein Buchstabe eingegeben wurde
-				{
-					std::cin >> guessed_letter;
-					mLogger->LogOnly("Geratener Buchstabe: " + guessedLetters);
-					if (!std::isalpha(guessed_letter))
-					{
-						mLogger->Log("Die Eingabe wurde nicht erkannt. Bitte gib einen Buchstaben ein");
-					}
-				} while (!std::isalpha(guessed_letter));
-
-				if (ContainsChar(mAllGuessedLetters, guessed_letter))
-				{
-					mLogger->Log("Der Buchstabe wurde bereits geraten. Versuche einen anderen. ");
-				}
-				else 
-				{
-					mAllGuessedLetters.push_back(guessed_letter);
-					proceed = true;
-				}
-			} while (!proceed);
-
-			if (ContainsChar(mGuessWord, guessed_letter))
-			{
-				mLogger->Log(string("Korrekt! Der Buchstabe ") + guessed_letter + " ist im Wort enthalten"); // Will man mehrere Zeichenfolgen zu einem String zusammenfügen, muss die erste Zeichenfolge explizit zu einem string gecasted werden
-				if (PrintGuessWord())
-				{
-					mLogger->Log(string("Glueckwunsch! ") + mPlayers[i]->GetName() + " hat gewonnen!");
-					mPlayers[i]->IncreaseScore();
-					mLogger->Log(string(mPlayers[i]->GetName()) + " hat einen Score von " + to_string(mPlayers[i]->GetScore()));
-					has_won = true;
-				}
-			}
-			else
-			{
-				mLogger->Log(string("Falsch! Der Buchstabe ") + guessed_letter + " ist leider nicht im Wort enthalten");
-				mWrongGuesses++;
-				if (mWrongGuesses == MAX_TRYS)
-				{
-					mLogger->Log(string("Das Spiel ist vorbei! Keiner konnte das Wort erraten. Der Spielleiter ") + mPlayers[0]->GetName() + " hat gewonnen.");
-					mPlayers[0]->IncreaseScore();
-					mLogger->Log(string(mPlayers[0]->GetName()) + " hat einen Score von " + to_string(mPlayers[i]->GetScore()));
-				}
+				has_won = true;
 			}
 			PressAnyKeyToContinue();
 		}
@@ -176,6 +118,84 @@ bool Game::StartRound()
 			break;
 		}
 	} while (true);
+}
+
+bool Game::GameTurn(IPlayer* player)
+{
+	bool player_turn = true;
+	do
+	{
+		mLogger->Log(player->GetName() + " ist an der Reihe!");
+		PrintGuessWord();
+		string guessedLetters = "";
+		for (int j = 0; j < mAllGuessedLetters.size(); j++)
+		{
+			guessedLetters.push_back(mAllGuessedLetters[j]);
+			guessedLetters.push_back(',');
+		}
+		mLogger->Log("");
+		mLogger->Log("Geratene Buchstaben: " + guessedLetters);
+
+		PrintHangman(mWrongGuesses);
+
+		string guessed_input = player->GuessLetterOrWord(mAllGuessedLetters);
+
+		if (guessed_input.length() == 1)
+		{
+			if (Helper::ContainsChar(mGuessWord, guessed_input[0]))
+			{
+				mLogger->Log(string("Korrekt! Der Buchstabe ") + guessed_input[0] + " ist im Wort enthalten"); // Will man mehrere Zeichenfolgen zu einem String zusammenfügen, muss die erste Zeichenfolge explizit zu einem string gecasted werden
+				if (PrintGuessWord())
+				{
+					mLogger->Log(string("Glueckwunsch! ") + player->GetName() + " hat gewonnen!");
+					player->IncreaseScore();
+					mLogger->Log(string(player->GetName()) + " hat einen Score von " + to_string(player->GetScore()));
+					return true;
+				}
+			}
+			else
+			{
+				mLogger->Log(string("Falsch! Der Buchstabe ") + guessed_input[0] + " ist leider nicht im Wort enthalten");
+				player_turn = false;
+				mWrongGuesses++;
+				if (mWrongGuesses == MAX_TRYS)
+				{
+					PrintHangman(mWrongGuesses);
+					mLogger->Log(string("Das Spiel ist vorbei! Keiner konnte das Wort erraten. Der Spielleiter ") + mPlayers[0]->GetName() + " hat gewonnen.");
+					mPlayers[0]->IncreaseScore();
+					mLogger->Log(string(mPlayers[0]->GetName()) + " hat einen Score von " + to_string(mPlayers[0]->GetScore()));
+					return true;
+				}
+			}
+		}
+		else
+		{
+			if (Helper::EqualStrings(guessed_input, mGuessWord))
+			{
+				mLogger->Log(string("Korrekt! Du hast das Wort richtig erraten"));
+				player->IncreaseScore();
+				mLogger->Log(string(player->GetName()) + " hat einen Score von " + to_string(player->GetScore()));
+				return true;
+			}
+			else
+			{
+				mLogger->Log(string("Falsch, das Wort ist nicht richtig!"));
+				player_turn = false;
+				mWrongGuesses++;
+				if (mWrongGuesses == MAX_TRYS)
+				{
+					PrintHangman(mWrongGuesses);
+					mLogger->Log(string("Das Spiel ist vorbei! Keiner konnte das Wort erraten. Der Spielleiter ") + mPlayers[0]->GetName() + " hat gewonnen.");
+					mPlayers[0]->IncreaseScore();
+					mLogger->Log(string(mPlayers[0]->GetName()) + " hat einen Score von " + to_string(mPlayers[0]->GetScore()));
+					return true;
+				}
+			}
+		}
+
+	} while (player_turn);
+
+	return false;
 }
 
 void Game::CreatePlayers()
@@ -230,7 +250,7 @@ bool Game::PrintGuessWord()
 	string guessWord = "";
 	for (int i = 0; i < mGuessWord.length(); i++)
 	{
-		if (ContainsChar(mAllGuessedLetters, mGuessWord[i]))
+		if (Helper::ContainsChar(mAllGuessedLetters, mGuessWord[i]))
 		{
 			//cout << mGuessWord[i] << " ";
 			guessWord.push_back(mGuessWord[i]);
@@ -245,23 +265,6 @@ bool Game::PrintGuessWord()
 	}
 	mLogger->Log(guessWord);
 	return gameWon;
-}
-
-bool Game::ContainsChar(std::vector<char> vector, char c) 
-{
-	for (int i = 0; i < vector.size(); i++) {
-		if (tolower(vector.at(i)) == tolower(c))
-			return true;
-	}
-	return false;
-}
-
-bool Game::ContainsChar(std::string str, char c) {
-	for (int i = 0; i < str.length(); i++) {
-		if (tolower(str.at(i)) == tolower(c))
-			return true;
-	}
-	return false;
 }
 
 void Game::PrintRules()

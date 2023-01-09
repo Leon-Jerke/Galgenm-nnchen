@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -9,7 +10,7 @@ public:
 	virtual ~IPlayer() = default;
 
 	virtual string ChooseWord() = 0;
-	virtual char GuessLetter() = 0;
+	virtual string GuessLetterOrWord(vector<char>& guessedLetters) = 0;
 
 	string GetName()
 	{
