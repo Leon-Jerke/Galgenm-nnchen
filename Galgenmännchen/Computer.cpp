@@ -3,7 +3,7 @@
 #include <fstream>
 #include <algorithm>
 
-Computer::Computer(int difficulty)
+Computer::Computer(int difficulty)			// Konstruktor -> wird bei erstellen eines Objekts der Klasse aufgerufen
 {
 	mName = "Computer";
 	mScore = 0;
@@ -14,18 +14,18 @@ Computer::Computer(int difficulty)
 
 string Computer::ChooseWord()
 {
-	int randomIndex = rand() % mDictionary.size();
-	return mDictionary[randomIndex];
+	int randomIndex = rand() % mDictionary.size();  // Zufällige Zahl innerhalb der Größe des Wörterbuchs
+	return mDictionary[randomIndex];				// Gebe das Wort an dieser zufälligen Position zurück
 }
 
 string Computer::GuessLetterOrWord(vector<char>& guessedLetters)
 {
-	for (char letter : mLetterGuessOrder)
+	for (char letter : mLetterGuessOrder)			// For-Schleife welche die Liste der Buchstabenhäufigkeit durchläuft
 	{
-		string guessedLetter = "";
-		if (!(Helper::ContainsChar(guessedLetters, letter)))
+		string guessedLetter = "";					
+		if (!(Helper::ContainsChar(guessedLetters, letter)))	  // Wenn der Buchstabe aus der Liste noch nicht erraten wurde, gib ihn zurück
 		{
-			guessedLetter.push_back(letter);
+			guessedLetter.push_back(letter);						// da wir einen String zurück geben müssen, muss der char erst in ein string umgewandelt werden
 			return guessedLetter;
 		}
 	}
@@ -33,10 +33,9 @@ string Computer::GuessLetterOrWord(vector<char>& guessedLetters)
 
 void Computer::ReadFile(string filePath)
 {
-	//ifstream word_file;
-	std::ifstream file(filePath);
-	for (std::string word; file >> word; )
+	std::ifstream file(filePath);							// Lies Datei ein
+	for (std::string word; file >> word; )					// Durchlaufe alle Wörter in der Datei
 	{
-		mDictionary.push_back(word);
+		mDictionary.push_back(word);					// Füge Wort zum Wörterbuch hinzu
 	}
 }

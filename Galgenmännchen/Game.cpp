@@ -13,27 +13,26 @@ using namespace std;
 constexpr auto MIN_PLAYER_NUMBER = 2;
 constexpr auto MAX_TRYS = 10;
 
-Game::Game() :	mGuessWord(),
+Game::Game() :	mGuessWord(),					// definieren der Spielstartwerte im Konstruktor
 				mNumberOfPlayers(0),
 				mGamemode(0),
 				mWrongGuesses(0),
 				mAllGuessedLetters()
 {
-	mLogger = Logger::GetInstance();
+	mLogger = Logger::GetInstance();			// Pointer einer Logger Instanz holen
 }
 
 void Game::Setup()
-{
-	setlocale(LC_ALL, "de_DE");
+{	
 	mLogger->Log("Willkomen zu Galgenmaennchen!");
 	mLogger->Log("Ein Projekt von Leo :D");
 	mLogger->Log("");
 
-	PrintRules();
-	PressAnyKeyToContinue();
+	PrintRules();					// Ausgeben der Regeln
+	PressAnyKeyToContinue();		
 
 	// Wähle den Spielmodus
-	do {
+	do {						// Solange nach Eingabe fragen, bis eine korrekte Eingabe gemacht wurde
 		mLogger->Log("Wie moechtest du spielen? (1 = Spieler vs Computer) (2 = Spieler vs Spieler)");
 		if (!(std::cin >> mGamemode) || (mGamemode != 1 && mGamemode != 2))
 		{
@@ -45,28 +44,28 @@ void Game::Setup()
 	mLogger->LogOnly("Gewaehlter Spielmodus: " + to_string(mGamemode));
 	mLogger->Log("");
 
-	switch (mGamemode)
+	switch (mGamemode)	// erzeugen der Spieler, abhängig vom Spielmodus
 	{
 	case Player_vs_Computer:
 	{
-		int difficulty;
-		do {
-			mLogger->Log("Wie stark soll der Computer sein? (1 = schwach, 2 = mittel, 3 = stark)");
-			if (!(std::cin >> difficulty) || (difficulty != 1 && difficulty != 2 && difficulty != 3))
-			{
-				std::cin.clear();
-				cin.ignore(numeric_limits<streamsize>::max(), '\n');
-				std::cout << std::endl << "Die Eingabe wurde leider nicht erkannt, bitte versuche es erneut :/" << std::endl;
-			}
-		} while (difficulty != 1 && difficulty != 2 && difficulty != 3);
-		mLogger->LogOnly("Gewaehlter Schwierigkeitsgrad: " + to_string(difficulty));
-		mPlayers.push_back(new Computer(difficulty));
-		CreatePlayers();
+		int difficulty = 1;		// Schwierigkeit noch nicht relevant, gibt bisher noch keine Schwierigkeitsstufen
+		//do {
+		//	mLogger->Log("Wie stark soll der Computer sein? (1 = schwach, 2 = mittel, 3 = stark)");
+		//	if (!(std::cin >> difficulty) || (difficulty != 1 && difficulty != 2 && difficulty != 3))
+		//	{
+		//		std::cin.clear();
+		//		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		//		std::cout << std::endl << "Die Eingabe wurde leider nicht erkannt, bitte versuche es erneut :/" << std::endl;
+		//	}
+		//} while (difficulty != 1 && difficulty != 2 && difficulty != 3);
+		//mLogger->LogOnly("Gewaehlter Schwierigkeitsgrad: " + to_string(difficulty));
+		mPlayers.push_back(new Computer(difficulty));	// erstelle Computer Spieler
+		CreatePlayers();									// erstelle Personen Spieler
 	}
 		break;
 	case Player_vs_Player:
 	{
-		CreatePlayers();
+		CreatePlayers();		// erstelle nur Personen Spieler
 	}
 		break;
 	default:
@@ -124,9 +123,10 @@ bool Game::StartRound()
 
 bool Game::GameTurn(IPlayer* player)
 {
-	bool player_turn = true;
-	do
+	bool player_turn = true;  // Hilfsvariable
+	do						 // Spieler darf solange spielen, bis er eine falsche Eingabe macht oder das Spiel vorbei ist
 	{
+		// Ausgabe der für die Runde relevanten Informationen
 		mLogger->Log(player->GetName() + " ist an der Reihe!");
 		PrintGuessWord();
 		string guessedLetters = "";
@@ -137,45 +137,58 @@ bool Game::GameTurn(IPlayer* player)
 		}
 		mLogger->Log("");
 		mLogger->Log("Geratene Buchstaben: " + guessedLetters);
-
 		PrintHangman(mWrongGuesses);
 
-		string guessed_input = player->GuessLetterOrWord(mAllGuessedLetters);
-		mLogger->Log(player->GetName() + " hat '" + guessed_input + "' geraten.");
+		// Eingabe der Person oder des Computers
+		string guessed_input = player->GuessLetterOrWord(mAllGuessedLetters);			
+		mLogger->Log(player->GetName() + " hat '" + guessed_input + "' geraten.");	
 		PressAnyKeyToContinue();
 
+		// Überprüfen der Eingabe
 		if (guessed_input.length() == 1) // Wenn nur ein Buchstabe geraten wird
 		{
 			mAllGuessedLetters.push_back(guessed_input[0]); // Geratener Buchstabe in Liste aufnehmen
-			if (Helper::ContainsChar(mGuessWord, guessed_input[0]))
+
+			if (Helper::ContainsChar(mGuessWord, guessed_input[0]))	// Ist der Buchstabe im Wort enhalten?
 			{
 				mLogger->Log(string("Korrekt! Der Buchstabe ") + guessed_input[0] + " ist im Wort enthalten"); // Will man mehrere Zeichenfolgen zu einem String zusammenfügen, muss die erste Zeichenfolge explizit zu einem string gecasted werden
-				if (PrintGuessWord())
+				bool all_letters_guessed = PrintGuessWord(); // Gibt das Wort mit den bisher erratenen Buchstaben aus und überprüft ob bereits alle erraten wurden
+				
+				if (all_letters_guessed) 
 				{
 					mLogger->Log(string("Glueckwunsch! ") + player->GetName() + " hat gewonnen!");
 					player_turn = false;
 					player->IncreaseScore();
+
 					mLogger->Log("Punktestand:");
-					for (int i = 0; i < mPlayers.size(); i++)
+					for (int i = 0; i < mPlayers.size(); i++)	// Zeige den Score aller Spieler
 					{
 						mLogger->Log(string(mPlayers[i]->GetName()) + " hat einen Score von " + to_string(player->GetScore()));
 					}
+
 					return true;
 				}
 				PressAnyKeyToContinue();
 			}
-			else
+			else		// Der Buchstabe ist nicht im Wort enthalten
 			{
 				mLogger->Log(string("Falsch! Der Buchstabe ") + guessed_input[0] + " ist leider nicht im Wort enthalten");
 				player_turn = false;
 				mWrongGuesses++;
 				PressAnyKeyToContinue();
+
 				if (mWrongGuesses == MAX_TRYS)
 				{
 					PrintHangman(mWrongGuesses);
 					mLogger->Log(string("Das Spiel ist vorbei! Keiner konnte das Wort erraten. Der Spielleiter ") + mPlayers[0]->GetName() + " hat gewonnen.");
 					mPlayers[0]->IncreaseScore();
-					mLogger->Log(string(mPlayers[0]->GetName()) + " hat einen Score von " + to_string(mPlayers[0]->GetScore()));
+
+					mLogger->Log("Punktestand:");
+					for (int i = 0; i < mPlayers.size(); i++)	// Zeige den Score aller Spieler
+					{
+						mLogger->Log(string(mPlayers[i]->GetName()) + " hat einen Score von " + to_string(player->GetScore()));
+					}
+
 					return true;
 				}
 			}
@@ -187,7 +200,13 @@ bool Game::GameTurn(IPlayer* player)
 				mLogger->Log(string("Korrekt! Du hast das Wort richtig erraten"));
 				player_turn = false;
 				player->IncreaseScore();
-				mLogger->Log(string(player->GetName()) + " hat einen Score von " + to_string(player->GetScore()));
+
+				mLogger->Log("Punktestand:");
+				for (int i = 0; i < mPlayers.size(); i++)	// Zeige den Score aller Spieler
+				{
+					mLogger->Log(string(mPlayers[i]->GetName()) + " hat einen Score von " + to_string(player->GetScore()));
+				}
+
 				return true;
 			}
 			else
@@ -196,17 +215,23 @@ bool Game::GameTurn(IPlayer* player)
 				player_turn = false;
 				mWrongGuesses++;
 				PressAnyKeyToContinue();
+
 				if (mWrongGuesses == MAX_TRYS)
 				{
 					PrintHangman(mWrongGuesses);
 					mLogger->Log(string("Das Spiel ist vorbei! Keiner konnte das Wort erraten. Der Spielleiter ") + mPlayers[0]->GetName() + " hat gewonnen.");
 					mPlayers[0]->IncreaseScore();
-					mLogger->Log(string(mPlayers[0]->GetName()) + " hat einen Score von " + to_string(mPlayers[0]->GetScore()));
+
+					mLogger->Log("Punktestand:");
+					for (int i = 0; i < mPlayers.size(); i++)	// Zeige den Score aller Spieler
+					{
+						mLogger->Log(string(mPlayers[i]->GetName()) + " hat einen Score von " + to_string(player->GetScore()));
+					}
+
 					return true;
 				}
 			}
 		}
-
 	} while (player_turn);
 
 	return false;
@@ -216,6 +241,7 @@ void Game::CreatePlayers()
 {
 	mLogger->Log("");
 	mLogger->Log("Wie viele Spieler?");
+
 	while (mNumberOfPlayers < MIN_PLAYER_NUMBER)
 	{	
 		if (!(std::cin >> mNumberOfPlayers))
@@ -231,6 +257,7 @@ void Game::CreatePlayers()
 			std::cout << std::endl << "Es werden mindestens 2 Spieler benoetigt" << std::endl;
 		}
 	}
+
 	mLogger->LogOnly("Anzahl Spieler: " + to_string(mNumberOfPlayers));
 
 	for (size_t i = 1; i <= mNumberOfPlayers; i++)
@@ -251,6 +278,7 @@ void Game::ShufflePlayers() {
 	mLogger->Log(mPlayers[0]->GetName() + " ist der Spielleiter");
 	mLogger->Log("");
 	mLogger->Log("Die Reihenfolge der Spieler ist: ");
+
 	for (int i = 1; i < mPlayers.size(); i++)
 	{
 		mLogger->Log(to_string(i) + ": " + mPlayers[i]->GetName());

@@ -1,11 +1,11 @@
 #include "Logger.h"
 
-Logger::Logger()
+Logger::Logger()   // Konstruktor
 {
 	mLogfile.open("GameLog.txt");
 }
 
-Logger::~Logger()
+Logger::~Logger()	// Destruktor
 {
 	mLogfile.close();
 }

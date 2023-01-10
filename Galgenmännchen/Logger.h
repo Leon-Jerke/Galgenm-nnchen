@@ -12,7 +12,7 @@ public:
 	void Log(string msg);			// Logt den String und zeigt ihn in der Konsole an
 	void LogOnly(string msg);		// Logt den String ohne ihn anzuzeigen
 private:
-	Logger();						// Konstruktor ist private damit keine Objekte vom Logger erzeugt werden können
+	Logger();						// Konstruktor ist private damit keine Objekte vom Logger auserhalb erzeugt werden können
 	~Logger();
 
 	static Logger* mLoggerInstance;	// Pointer auf das einzige existierende Logger Objekt

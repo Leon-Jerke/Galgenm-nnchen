@@ -10,7 +10,5 @@ public:
 	Person(std::string Name);
 	string ChooseWord() override;
 	string GuessLetterOrWord(vector<char>& guessedLetters) override;
-private:
-	
 
 };

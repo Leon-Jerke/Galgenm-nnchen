@@ -4,10 +4,10 @@
 
 int main()
 {
-    Game game = Game();
-    game.Setup();
-    bool continuePlaying = true;
-    do
+    Game game = Game();     // Erstelle Spielinstanz
+    game.Setup();           // Einstellungen wählen 
+    bool continuePlaying = true;    // Hilfsvariable
+    do                      // Spiele solange, bis das Spiel beendet wird
     {
         continuePlaying = game.StartRound();
     } while (continuePlaying);
