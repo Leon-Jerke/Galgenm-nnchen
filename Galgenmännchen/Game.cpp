@@ -96,6 +96,7 @@ bool Game::StartRound()
 			if (GameTurn(mPlayers[i]))
 			{
 				has_won = true;
+				break;			// break um auch frühzeitig aus der For-Schleife zu kommen
 			}
 			PressAnyKeyToContinue();
 		}
@@ -139,9 +140,12 @@ bool Game::GameTurn(IPlayer* player)
 		PrintHangman(mWrongGuesses);
 
 		string guessed_input = player->GuessLetterOrWord(mAllGuessedLetters);
+		mLogger->Log(player->GetName() + " hat '" + guessed_input + "' geraten.");
+		PressAnyKeyToContinue();
 
-		if (guessed_input.length() == 1)
+		if (guessed_input.length() == 1) // Wenn nur ein Buchstabe geraten wird
 		{
+			mAllGuessedLetters.push_back(guessed_input[0]); // Geratener Buchstabe in Liste aufnehmen
 			if (Helper::ContainsChar(mGuessWord, guessed_input[0]))
 			{
 				mLogger->Log(string("Korrekt! Der Buchstabe ") + guessed_input[0] + " ist im Wort enthalten"); // Will man mehrere Zeichenfolgen zu einem String zusammenfügen, muss die erste Zeichenfolge explizit zu einem string gecasted werden
@@ -152,12 +156,14 @@ bool Game::GameTurn(IPlayer* player)
 					mLogger->Log(string(player->GetName()) + " hat einen Score von " + to_string(player->GetScore()));
 					return true;
 				}
+				PressAnyKeyToContinue();
 			}
 			else
 			{
 				mLogger->Log(string("Falsch! Der Buchstabe ") + guessed_input[0] + " ist leider nicht im Wort enthalten");
 				player_turn = false;
 				mWrongGuesses++;
+				PressAnyKeyToContinue();
 				if (mWrongGuesses == MAX_TRYS)
 				{
 					PrintHangman(mWrongGuesses);
@@ -168,7 +174,7 @@ bool Game::GameTurn(IPlayer* player)
 				}
 			}
 		}
-		else
+		else // Wenn ein ganzes Wort geraten wird
 		{
 			if (Helper::EqualStrings(guessed_input, mGuessWord))
 			{
@@ -182,6 +188,7 @@ bool Game::GameTurn(IPlayer* player)
 				mLogger->Log(string("Falsch, das Wort ist nicht richtig!"));
 				player_turn = false;
 				mWrongGuesses++;
+				PressAnyKeyToContinue();
 				if (mWrongGuesses == MAX_TRYS)
 				{
 					PrintHangman(mWrongGuesses);

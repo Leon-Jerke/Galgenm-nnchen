@@ -1,4 +1,5 @@
 #include "Computer.h"
+#include "Helper.cpp"
 #include <fstream>
 #include <algorithm>
 
@@ -13,13 +14,21 @@ Computer::Computer(int difficulty)
 
 string Computer::ChooseWord()
 {
-	int random = rand() % mDictionary.size();
+	//int random = rand() % mDictionary.size();
 	return "test";
 }
 
 string Computer::GuessLetterOrWord(vector<char>& guessedLetters)
 {
-	return 0;
+	for (char letter : mLetterGuessOrder)
+	{
+		string guessedLetter = "";
+		if (!(Helper::ContainsChar(guessedLetters, letter)))
+		{
+			guessedLetter.push_back(letter);
+			return guessedLetter;
+		}
+	}
 }
 
 void Computer::ReadFile(string filePath)

@@ -28,7 +28,7 @@ string Person::ChooseWord()
 			if (!isalpha(letter)) {
 				cout << endl << "Fehler! Bitte gib nur Buchstaben ein, keine Sonderzeichen oder Zahlen." << endl;
 				correct_word = false;
-				continue;
+				break;
 			}
 		}
 
@@ -41,13 +41,14 @@ string Person::GuessLetterOrWord(vector<char>& guessedLetters)
 {
 	Logger* logger = Logger::GetInstance();
 	string guessed_input;
-	bool proceed = true;
+	bool proceed;
 	logger->Log("Gib einen Buchstaben oder das volle Wort ein: ");
 
 	do
 	{
 		guessed_input = "";
 		cin >> guessed_input;
+		proceed = true;
 		if (guessed_input.length() == 1) // Eingabe von nur einem Buchstaben
 		{
 			if (!std::isalpha(guessed_input[0]))
@@ -62,19 +63,10 @@ string Person::GuessLetterOrWord(vector<char>& guessedLetters)
 				logger->Log("Der Buchstabe wurde bereits geraten. Versuche einen anderen. ");
 				proceed = false;
 			}
-			else
-			{
-				guessedLetters.push_back(guessed_input[0]);
-				logger->LogOnly("Geratener Buchstabe: " + guessed_input);
-			}
 		}
 		else // Eingabe eines Wortes
 		{
-			if (std::all_of(begin(guessed_input), end(guessed_input), std::isalpha))
-			{
-
-			}
-			else
+			if (!(std::all_of(begin(guessed_input), end(guessed_input), std::isalpha)))
 			{
 				logger->Log("Das Wort darf keine Sonderzeichen oder Zahlen enthalten. ");
 				proceed = false;

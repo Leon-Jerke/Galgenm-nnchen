@@ -14,27 +14,23 @@ Gewaehlter Spielmodus: 2
 
 
 Wie viele Spieler?
-Anzahl Spieler: 3
+Anzahl Spieler: 2
 
 Wie heisst Spieler 1 ?
-Spieler 1 heisst Test
+Spieler 1 heisst Leon
 
 Wie heisst Spieler 2 ?
-Spieler 2 heisst Leon
-
-Wie heisst Spieler 3 ?
-Spieler 3 heisst Kurt
+Spieler 2 heisst Lel
 Die Spieler werden gemischelt!
 
-Test ist der Spielleiter
+Leon ist der Spielleiter
 
 Die Reihenfolge der Spieler ist: 
-1: Leon
-2: Kurt
+1: Lel
 
-Test, gebe das zu erratende Wort ein: 
-Leon ist an der Reihe!
-_ _ _ _ _ _ _ 
+Leon, gebe das zu erratende Wort ein: 
+Lel ist an der Reihe!
+_ _ _ _ 
 
 Geratene Buchstaben: 
 
@@ -51,34 +47,13 @@ Geratene Buchstaben:
 * * * * * * * * * *
 
 Gib einen Buchstaben oder das volle Wort ein: 
-Geratener Buchstabe: p
-Korrekt! Der Buchstabe p ist im Wort enthalten
-P _ _ _ _ _ _ 
-Leon ist an der Reihe!
-P _ _ _ _ _ _ 
+Lel hat 'L' geraten.
+Korrekt! Der Buchstabe L ist im Wort enthalten
+L _ _ _ 
+Lel ist an der Reihe!
+L _ _ _ 
 
-Geratene Buchstaben: p,
-
-* * * * * * * * * *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-* * * * * * * * * *
-
-Gib einen Buchstaben oder das volle Wort ein: 
-Geratener Buchstabe: r
-Korrekt! Der Buchstabe r ist im Wort enthalten
-P r _ _ _ _ _ 
-Leon ist an der Reihe!
-P r _ _ _ _ _ 
-
-Geratene Buchstaben: p,r,
+Geratene Buchstaben: L,
 
 * * * * * * * * * *
 *                 *
@@ -93,33 +68,14 @@ Geratene Buchstaben: p,r,
 * * * * * * * * * *
 
 Gib einen Buchstaben oder das volle Wort ein: 
-Geratener Buchstabe: o
-Korrekt! Der Buchstabe o ist im Wort enthalten
-P r o _ _ _ _ 
-Leon ist an der Reihe!
-P r o _ _ _ _ 
+Der Buchstabe wurde bereits geraten. Versuche einen anderen. 
+Lel hat 'e' geraten.
+Korrekt! Der Buchstabe e ist im Wort enthalten
+L e _ _ 
+Lel ist an der Reihe!
+L e _ _ 
 
-Geratene Buchstaben: p,r,o,
-
-* * * * * * * * * *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-* * * * * * * * * *
-
-Gib einen Buchstaben oder das volle Wort ein: 
-Geratener Buchstabe: k
-Falsch! Der Buchstabe k ist leider nicht im Wort enthalten
-Kurt ist an der Reihe!
-P r o _ _ _ _ 
-
-Geratene Buchstaben: p,r,o,k,
+Geratene Buchstaben: L,e,
 
 * * * * * * * * * *
 *                 *
@@ -129,43 +85,8 @@ Geratene Buchstaben: p,r,o,k,
 *                 *
 *                 *
 *                 *
-*    _____        *
-*   /     \       *
+*                 *
+*                 *
 * * * * * * * * * *
 
 Gib einen Buchstaben oder das volle Wort ein: 
-Geratener Buchstabe: b
-Korrekt! Der Buchstabe b ist im Wort enthalten
-P r o b _ _ _ 
-Kurt ist an der Reihe!
-P r o b _ _ _ 
-
-Geratene Buchstaben: p,r,o,k,b,
-
-* * * * * * * * * *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*    _____        *
-*   /     \       *
-* * * * * * * * * *
-
-Gib einen Buchstaben oder das volle Wort ein: 
-Korrekt! Du hast das Wort richtig erraten
-Kurt hat einen Score von 1
-------------------------------------------------
-Moechtet ihr erneut spielen? (y/n)
-n der Reihe!
-Die Spieler werden gemischelt!
-
-Test ist der Spielleiter
-
-Die Reihenfolge der Spieler ist: 
-1: Leon
-2: Kurt
-
-Test, gebe das zu erratende Wort ein: 

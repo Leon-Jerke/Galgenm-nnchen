@@ -2,6 +2,7 @@
 #include "IPlayer.h"
 #include <string>
 #include <set>
+#include <vector>
 
 using namespace std;
 
@@ -11,10 +12,11 @@ public:
 	Computer(int difficulty);
 	string ChooseWord() override;
 	string GuessLetterOrWord(vector<char>& guessedLetters) override;
-	void SetDifficulty(int difficulty);
 private:
 	void ReadFile(string filePath);
 
 	int mDifficulty;
 	set<string> mDictionary;
+	// Buchstabenhäufigkeit in deutschen Texten in absteigender Reihenfolge
+	vector<char> mLetterGuessOrder{'E','N','I','S','R','A','T','D','H','U','L','C','G','M','O','B','W','F','K','Z','P','V','ß','J','Y','X','Q'};
 };
