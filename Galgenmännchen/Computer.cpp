@@ -9,13 +9,13 @@ Computer::Computer(int difficulty)
 	mScore = 0;
 	mIsGamemaker = false;
 	mDifficulty = difficulty;
-	ReadFile("dictionary.txt");
+	ReadFile("Dictionary.txt");
 }
 
 string Computer::ChooseWord()
 {
-	//int random = rand() % mDictionary.size();
-	return "test";
+	int randomIndex = rand() % mDictionary.size();
+	return mDictionary[randomIndex];
 }
 
 string Computer::GuessLetterOrWord(vector<char>& guessedLetters)
@@ -37,6 +37,6 @@ void Computer::ReadFile(string filePath)
 	std::ifstream file(filePath);
 	for (std::string word; file >> word; )
 	{
-		mDictionary.insert(word);
+		mDictionary.push_back(word);
 	}
 }

@@ -98,6 +98,7 @@ bool Game::StartRound()
 				has_won = true;
 				break;			// break um auch frühzeitig aus der For-Schleife zu kommen
 			}
+			mLogger->Log("Nächster Spieler!");
 			PressAnyKeyToContinue();
 		}
 		mLogger->LogOnly("------------------------------------------------");
@@ -107,7 +108,7 @@ bool Game::StartRound()
 	do // Frage solange nach einer Eingabe bis eine richtige Antwort gegeben wurde
 	{
 		std::cin >> input;
-		mLogger->Log("Eingabe: " + input);
+		mLogger->LogOnly("Eingabe: " + input);
 		switch (tolower(input))
 		{
 		case 'y':
@@ -152,8 +153,13 @@ bool Game::GameTurn(IPlayer* player)
 				if (PrintGuessWord())
 				{
 					mLogger->Log(string("Glueckwunsch! ") + player->GetName() + " hat gewonnen!");
+					player_turn = false;
 					player->IncreaseScore();
-					mLogger->Log(string(player->GetName()) + " hat einen Score von " + to_string(player->GetScore()));
+					mLogger->Log("Punktestand:");
+					for (int i = 0; i < mPlayers.size(); i++)
+					{
+						mLogger->Log(string(mPlayers[i]->GetName()) + " hat einen Score von " + to_string(player->GetScore()));
+					}
 					return true;
 				}
 				PressAnyKeyToContinue();
@@ -179,6 +185,7 @@ bool Game::GameTurn(IPlayer* player)
 			if (Helper::EqualStrings(guessed_input, mGuessWord))
 			{
 				mLogger->Log(string("Korrekt! Du hast das Wort richtig erraten"));
+				player_turn = false;
 				player->IncreaseScore();
 				mLogger->Log(string(player->GetName()) + " hat einen Score von " + to_string(player->GetScore()));
 				return true;

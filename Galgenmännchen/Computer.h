@@ -16,7 +16,7 @@ private:
 	void ReadFile(string filePath);
 
 	int mDifficulty;
-	set<string> mDictionary;
+	vector<string> mDictionary;
 	// Buchstabenhäufigkeit in deutschen Texten in absteigender Reihenfolge
 	vector<char> mLetterGuessOrder{'E','N','I','S','R','A','T','D','H','U','L','C','G','M','O','B','W','F','K','Z','P','V','ß','J','Y','X','Q'};
 };

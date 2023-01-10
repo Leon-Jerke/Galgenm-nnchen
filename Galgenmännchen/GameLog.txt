@@ -10,8 +10,10 @@ Regel 4: ...
 Regel 5: ...
 Regel 6: ...
 Wie moechtest du spielen? (1 = Spieler vs Computer) (2 = Spieler vs Spieler)
-Gewaehlter Spielmodus: 2
+Gewaehlter Spielmodus: 1
 
+Wie stark soll der Computer sein? (1 = schwach, 2 = mittel, 3 = stark)
+Gewaehlter Schwierigkeitsgrad: 1
 
 Wie viele Spieler?
 Anzahl Spieler: 2
@@ -20,17 +22,18 @@ Wie heisst Spieler 1 ?
 Spieler 1 heisst Leon
 
 Wie heisst Spieler 2 ?
-Spieler 2 heisst Lel
+Spieler 2 heisst Kevvn
 Die Spieler werden gemischelt!
 
-Leon ist der Spielleiter
+Computer ist der Spielleiter
 
 Die Reihenfolge der Spieler ist: 
-1: Lel
+1: Leon
+2: Kevvn
 
-Leon, gebe das zu erratende Wort ein: 
-Lel ist an der Reihe!
-_ _ _ _ 
+Computer, gebe das zu erratende Wort ein: 
+Leon ist an der Reihe!
+_ _ _ _ _ _ _ _ _ 
 
 Geratene Buchstaben: 
 
@@ -47,35 +50,13 @@ Geratene Buchstaben:
 * * * * * * * * * *
 
 Gib einen Buchstaben oder das volle Wort ein: 
-Lel hat 'L' geraten.
-Korrekt! Der Buchstabe L ist im Wort enthalten
-L _ _ _ 
-Lel ist an der Reihe!
-L _ _ _ 
+Leon hat 'o' geraten.
+Falsch! Der Buchstabe o ist leider nicht im Wort enthalten
+Nächster Spieler!
+Kevvn ist an der Reihe!
+_ _ _ _ _ _ _ _ _ 
 
-Geratene Buchstaben: L,
-
-* * * * * * * * * *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-*                 *
-* * * * * * * * * *
-
-Gib einen Buchstaben oder das volle Wort ein: 
-Der Buchstabe wurde bereits geraten. Versuche einen anderen. 
-Lel hat 'e' geraten.
-Korrekt! Der Buchstabe e ist im Wort enthalten
-L e _ _ 
-Lel ist an der Reihe!
-L e _ _ 
-
-Geratene Buchstaben: L,e,
+Geratene Buchstaben: o,
 
 * * * * * * * * * *
 *                 *
@@ -85,8 +66,8 @@ Geratene Buchstaben: L,e,
 *                 *
 *                 *
 *                 *
-*                 *
-*                 *
+*    _____        *
+*   /     \       *
 * * * * * * * * * *
 
 Gib einen Buchstaben oder das volle Wort ein: 
