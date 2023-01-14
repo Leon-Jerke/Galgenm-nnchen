@@ -17,9 +17,9 @@ public:
 
 	void Setup();		// Setup Methode die einmalig zu Beginn aufgerufen wird um die Einstellungen zu treffen
 	bool StartRound();	// Startet eine neue Runde Galgenmännchen
+	void PressAnyKeyToContinue();		// Bereinigt die Konsole
 
 private:
-	void PressAnyKeyToContinue();		// Bereinigt die Konsole
 	void PrintRules();					// Gibt die Spielregeln aus
 	void PrintHangman(int wrongGuesses);	// Gibt den aktuellen Zustand des Galgenmännchens aus
 	void CreatePlayers();					// erzeugt die Personen Spieler

@@ -34,5 +34,4 @@ public:
 protected:				// Member-Variablen, die alle Spieler (Person und Computer) besitzen, werden ebenfalls hier deklariert
 	string mName;		
 	int mScore;
-	bool mIsGamemaker;
 };

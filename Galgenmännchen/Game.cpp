@@ -48,18 +48,30 @@ void Game::Setup()
 	{
 	case Player_vs_Computer:
 	{
-		int difficulty = 1;		// Schwierigkeit noch nicht relevant, gibt bisher noch keine Schwierigkeitsstufen
-		//do {
-		//	mLogger->Log("Wie stark soll der Computer sein? (1 = schwach, 2 = mittel, 3 = stark)");
-		//	if (!(std::cin >> difficulty) || (difficulty != 1 && difficulty != 2 && difficulty != 3))
-		//	{
-		//		std::cin.clear();
-		//		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		//		std::cout << std::endl << "Die Eingabe wurde leider nicht erkannt, bitte versuche es erneut :/" << std::endl;
-		//	}
-		//} while (difficulty != 1 && difficulty != 2 && difficulty != 3);
-		//mLogger->LogOnly("Gewaehlter Schwierigkeitsgrad: " + to_string(difficulty));
-		mPlayers.push_back(new Computer(difficulty));	// erstelle Computer Spieler
+		Computer* computer_player = new Computer(); // Erstelle Computer Spieler
+		mLogger->Log("Moechtest du davor noch weitere Woerter zum Vokabular des Computers hinzufügen? (y/n)");
+		char input;
+		bool proceed = false;
+		do // Frage solange nach einer Eingabe bis eine richtige Antwort gegeben wurde
+		{
+			std::cin >> input;
+			mLogger->LogOnly("Eingabe: " + input);
+			switch (tolower(input))
+			{
+			case 'y':
+				computer_player->AddWordsToDictionary();
+				proceed = true;
+				break;
+			case 'n':
+				proceed = true;
+				break;
+			default:
+				mLogger->Log("Die Eingabe wurde nicht erkannt. Bitte gib 'y' pder 'n' ein");
+				proceed = false;
+				break;
+			}
+		} while (!proceed);
+		mPlayers.push_back(computer_player);			// füge Computer zu Spielern hinzu
 		CreatePlayers();									// erstelle Personen Spieler
 	}
 		break;
@@ -74,7 +86,6 @@ void Game::Setup()
 	}
 
 	PressAnyKeyToContinue();
-	StartRound();
 }
 
 bool Game::StartRound()
@@ -163,30 +174,31 @@ bool Game::GameTurn(IPlayer* player)
 					mLogger->Log("Punktestand:");
 					for (int i = 0; i < mPlayers.size(); i++)	// Zeige den Score aller Spieler
 					{
-						mLogger->Log(string(mPlayers[i]->GetName()) + " hat einen Score von " + to_string(player->GetScore()));
+						mLogger->Log(string(mPlayers[i]->GetName()) + " hat einen Score von " + to_string(mPlayers[i]->GetScore()));
 					}
 
 					return true;
 				}
 				PressAnyKeyToContinue();
 			}
+
 			else		// Der Buchstabe ist nicht im Wort enthalten
 			{
 				mLogger->Log(string("Falsch! Der Buchstabe ") + guessed_input[0] + " ist leider nicht im Wort enthalten");
 				player_turn = false;
 				mWrongGuesses++;
+				PrintHangman(mWrongGuesses);
 				PressAnyKeyToContinue();
 
 				if (mWrongGuesses == MAX_TRYS)
 				{
-					PrintHangman(mWrongGuesses);
 					mLogger->Log(string("Das Spiel ist vorbei! Keiner konnte das Wort erraten. Der Spielleiter ") + mPlayers[0]->GetName() + " hat gewonnen.");
 					mPlayers[0]->IncreaseScore();
 
 					mLogger->Log("Punktestand:");
 					for (int i = 0; i < mPlayers.size(); i++)	// Zeige den Score aller Spieler
 					{
-						mLogger->Log(string(mPlayers[i]->GetName()) + " hat einen Score von " + to_string(player->GetScore()));
+						mLogger->Log(string(mPlayers[i]->GetName()) + " hat einen Score von " + to_string(mPlayers[i]->GetScore()));
 					}
 
 					return true;
@@ -204,7 +216,7 @@ bool Game::GameTurn(IPlayer* player)
 				mLogger->Log("Punktestand:");
 				for (int i = 0; i < mPlayers.size(); i++)	// Zeige den Score aller Spieler
 				{
-					mLogger->Log(string(mPlayers[i]->GetName()) + " hat einen Score von " + to_string(player->GetScore()));
+					mLogger->Log(string(mPlayers[i]->GetName()) + " hat einen Score von " + to_string(mPlayers[i]->GetScore()));
 				}
 
 				return true;
@@ -225,7 +237,7 @@ bool Game::GameTurn(IPlayer* player)
 					mLogger->Log("Punktestand:");
 					for (int i = 0; i < mPlayers.size(); i++)	// Zeige den Score aller Spieler
 					{
-						mLogger->Log(string(mPlayers[i]->GetName()) + " hat einen Score von " + to_string(player->GetScore()));
+						mLogger->Log(string(mPlayers[i]->GetName()) + " hat einen Score von " + to_string(mPlayers[i]->GetScore()));
 					}
 
 					return true;

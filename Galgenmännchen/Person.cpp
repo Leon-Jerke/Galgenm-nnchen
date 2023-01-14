@@ -12,7 +12,6 @@ Person::Person(std::string name)   // Konstruktor -> wird bei erstellen eines Ob
 {
 	mName = name;
 	mScore = 0;
-	mIsGamemaker = false;
 }
 
 string Person::ChooseWord()

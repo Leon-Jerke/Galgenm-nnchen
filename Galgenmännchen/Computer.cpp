@@ -2,13 +2,12 @@
 #include "Helper.cpp"
 #include <fstream>
 #include <algorithm>
+#include "Logger.h"
 
-Computer::Computer(int difficulty)			// Konstruktor -> wird bei erstellen eines Objekts der Klasse aufgerufen
+Computer::Computer()			// Konstruktor -> wird bei erstellen eines Objekts der Klasse aufgerufen
 {
 	mName = "Computer";
 	mScore = 0;
-	mIsGamemaker = false;
-	mDifficulty = difficulty;
 	ReadFile("Dictionary.txt");
 }
 
@@ -29,6 +28,65 @@ string Computer::GuessLetterOrWord(vector<char>& guessedLetters)
 			return guessedLetter;
 		}
 	}
+	return "Error";
+}
+
+void Computer::AddWordsToDictionary()
+{
+	Logger* logger = Logger::GetInstance();
+	bool add_more_words;
+	string new_word;
+	do
+	{
+		bool proceed = false;
+		logger->Log("Gib ein neues Wort ein ");
+		do
+		{
+			new_word = "";
+			cin >> new_word;
+			proceed = true;
+			if (!(std::all_of(begin(new_word), end(new_word), std::isalpha))) // Ist jedes Zeichen des eingebenen Wortes ein Buchstabe?
+			{
+				logger->Log("Das Wort darf keine Sonderzeichen oder Zahlen enthalten. Versuche es erneut: ");
+				proceed = false;
+			}
+			else if (Helper::ContainsString(mDictionary, new_word))
+			{
+				logger->Log("Das Wort ist bereits im Vokabular enthalten. Versuche es erneut: ");
+				proceed = false;
+			}
+			else
+			{
+				AddWordToFile("Dictionary.txt", new_word);
+				proceed = true;
+			}
+
+		} while (!proceed);
+
+		logger->Log("Willst du ein weiteres Wort eingeben? (y/n) ");
+		proceed = false;
+		char input;
+		do // Frage solange nach einer Eingabe bis eine richtige Antwort gegeben wurde
+		{
+			std::cin >> input;
+			logger->LogOnly("Eingabe: " + input);
+			switch (tolower(input))
+			{
+			case 'y':
+				add_more_words = true;
+				proceed = true;
+				break;
+			case 'n':
+				add_more_words = false;
+				proceed = true;
+				break;
+			default:
+				logger->Log("Die Eingabe wurde nicht erkannt. Bitte gib 'y' pder 'n' ein");
+				proceed = false;
+				break;
+			}
+		} while (!proceed);
+	} while (add_more_words);
 }
 
 void Computer::ReadFile(string filePath)
@@ -38,4 +96,12 @@ void Computer::ReadFile(string filePath)
 	{
 		mDictionary.push_back(word);					// Füge Wort zum Wörterbuch hinzu
 	}
+}
+
+void Computer::AddWordToFile(string filePath, string word)
+{
+	ofstream myFile; 
+	myFile.open(filePath, ios::app);	// Öffne Datei
+	myFile << word << endl;									// Füge Wort hinzu
+	myFile.close();											// Schließe Datei
 }

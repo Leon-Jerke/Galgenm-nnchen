@@ -10,6 +10,7 @@ int main()
     do                      // Spiele solange, bis das Spiel beendet wird
     {
         continuePlaying = game.StartRound();
+        game.PressAnyKeyToContinue();
     } while (continuePlaying);
 
     return 0;
