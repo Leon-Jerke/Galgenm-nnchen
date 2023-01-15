@@ -1,6 +1,7 @@
 #include <iostream>
 #include <random>
 #include "Game.h"
+#include <windows.h>
 
 int main()
 {
@@ -12,6 +13,12 @@ int main()
         continuePlaying = game.StartRound();
         game.PressAnyKeyToContinue();
     } while (continuePlaying);
+
+    //Öffne die GameLog Datei
+    LPCWSTR szAction = L"open";
+    LPCWSTR szApplicationName = L"notepad.exe";
+    LPCWSTR szParameters = L"..\\Galgenmännchen\\GameLog.txt";
+    ShellExecute(NULL, szAction, szApplicationName, szParameters, NULL, SW_SHOWDEFAULT);
 
     return 0;
 }
