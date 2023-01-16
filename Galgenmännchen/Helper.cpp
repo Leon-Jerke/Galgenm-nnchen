@@ -52,4 +52,23 @@ namespace Helper
 				return tolower(a) == tolower(b);
 			});
 	}
+
+	static vector<string> ReadWordsFromFile(string filePath)
+	{
+		vector<string> word_list;
+		std::ifstream file(filePath);				// Lies Datei ein
+		for (std::string word; file >> word; )		// Durchlaufe alle Wörter in der Datei
+		{
+			word_list.push_back(word);			// Füge Wort zum Wörterbuch hinzu
+		}
+		return word_list;
+	}
+
+	static void AddWordToFile(string filePath, string word)
+	{
+		ofstream myFile;
+		myFile.open(filePath, ios::app);	// Öffne Datei
+		myFile << word << endl;						// Füge Wort hinzu
+		myFile.close();								// Schließe Datei
+	}
 }

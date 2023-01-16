@@ -54,3 +54,6 @@ Fehlerliste
 Testperson
 Testperson
 kacke
+Opfer
+Problemfall
+Spast

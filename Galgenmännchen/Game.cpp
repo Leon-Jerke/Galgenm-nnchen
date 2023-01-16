@@ -49,7 +49,7 @@ void Game::Setup()
 	case Player_vs_Computer:
 	{
 		Computer* computer_player = new Computer(); // Erstelle Computer Spieler
-		mLogger->Log("Moechtest du davor noch weitere Woerter zum Vokabular des Computers hinzufügen? (y/n)");
+		mLogger->Log("Moechtest du davor noch weitere Woerter zum Vokabular des Computers hinzufuegen? (y/n)");
 		char input;
 		bool proceed = false;
 		do // Frage solange nach einer Eingabe bis eine richtige Antwort gegeben wurde
@@ -84,19 +84,24 @@ void Game::Setup()
 		std::cout << "Error: Unbekannter Spielmodus" << std::endl;
 		break;
 	}
-
 	PressAnyKeyToContinue();
+	ShufflePlayers();			// Spieler mischeln und Spielleiter bestimmen
 }
 
 bool Game::StartRound()
 { 
 	mAllGuessedLetters.clear(); // Zu Beginn die erratenen Buchstaben zurücksetzen
 	mWrongGuesses = 0;			// Anzahl an falschen Versuchen zurücksetzen
-	ShufflePlayers();			// Spieler mischeln und Spielleiter bestimmen
 	mLogger->Log("");
 	mLogger->Log(mPlayers[0]->GetName() + ", gebe das zu erratende Wort ein: ");
 	mGuessWord = mPlayers[0]->ChooseWord();
 	
+	vector<string> currentDicitonary = Helper::ReadWordsFromFile("Dictionary.txt");
+	if (!(Helper::ContainsString(currentDicitonary, mGuessWord)))
+	{
+		Helper::AddWordToFile("Dictionary.txt", mGuessWord);
+	}
+
 	PressAnyKeyToContinue();
 	bool has_won = false;
 	while (!has_won && mWrongGuesses < MAX_TRYS)	// Spiele solange, bis ein Spieler gewonnen hat oder die maximale Anzahl an Versuchen erreicht wurde
@@ -108,7 +113,7 @@ bool Game::StartRound()
 				has_won = true;
 				break;			// break um auch frühzeitig aus der For-Schleife zu kommen
 			}
-			mLogger->Log("Nächster Spieler!");
+			mLogger->Log("Naechster Spieler!");
 			PressAnyKeyToContinue();
 		}
 		mLogger->LogOnly("------------------------------------------------");
@@ -171,6 +176,8 @@ bool Game::GameTurn(IPlayer* player)
 					player_turn = false;
 					player->IncreaseScore();
 
+					std::rotate(mPlayers.begin(), std::find(mPlayers.begin(), mPlayers.end(), player), mPlayers.end()); // Rotiere den Gewinner an erste Stelle des Vectors
+
 					mLogger->Log("Punktestand:");
 					for (int i = 0; i < mPlayers.size(); i++)	// Zeige den Score aller Spieler
 					{
@@ -212,6 +219,8 @@ bool Game::GameTurn(IPlayer* player)
 				mLogger->Log(string("Korrekt! Du hast das Wort richtig erraten"));
 				player_turn = false;
 				player->IncreaseScore();
+
+				std::rotate(mPlayers.begin(), std::find(mPlayers.begin(), mPlayers.end(), player), mPlayers.end()); // Rotiere den Gewinner an erste Stelle des Vectors
 
 				mLogger->Log("Punktestand:");
 				for (int i = 0; i < mPlayers.size(); i++)	// Zeige den Score aller Spieler

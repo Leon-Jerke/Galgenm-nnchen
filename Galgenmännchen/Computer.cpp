@@ -8,7 +8,7 @@ Computer::Computer()			// Konstruktor -> wird bei erstellen eines Objekts der Kl
 {
 	mName = "Computer";
 	mScore = 0;
-	ReadFile("Dictionary.txt");
+	mDictionary = Helper::ReadWordsFromFile("Dictionary.txt");
 }
 
 string Computer::ChooseWord()
@@ -57,7 +57,7 @@ void Computer::AddWordsToDictionary()
 			}
 			else
 			{
-				AddWordToFile("Dictionary.txt", new_word);
+				Helper::AddWordToFile("Dictionary.txt", new_word);
 				proceed = true;
 			}
 
@@ -87,21 +87,8 @@ void Computer::AddWordsToDictionary()
 			}
 		} while (!proceed);
 	} while (add_more_words);
+	mDictionary = Helper::ReadWordsFromFile("Dictionary.txt");
 }
 
-void Computer::ReadFile(string filePath)
-{
-	std::ifstream file(filePath);							// Lies Datei ein
-	for (std::string word; file >> word; )					// Durchlaufe alle Wörter in der Datei
-	{
-		mDictionary.push_back(word);					// Füge Wort zum Wörterbuch hinzu
-	}
-}
 
-void Computer::AddWordToFile(string filePath, string word)
-{
-	ofstream myFile; 
-	myFile.open(filePath, ios::app);	// Öffne Datei
-	myFile << word << endl;									// Füge Wort hinzu
-	myFile.close();											// Schließe Datei
-}
+
